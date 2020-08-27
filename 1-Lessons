@@ -1,5 +1,6 @@
 [StartCode]
-{          // Общие данные
+{         
+            // Общие данные
             char simbolOfCoins = "Z" // Название игровой валюты
             sbyte lossOfHealthDueToPoisoning = -12; // Трата очков жизни при отравлении
             short maximumHpMonster = 760; // Максимальное значение жизни монстра при поедании ...
@@ -19,6 +20,6 @@
             int moneyGovrusha = 10; //кол-во денег в инвентаре героя
             byte hpGovrusha = 100; //кол-во жизни у героя
             float regenirationLiveGovrushaPerSecond = 2.5f; // регенерация жизни героя в секунду
-           
+        
         }
 [EndCode]
