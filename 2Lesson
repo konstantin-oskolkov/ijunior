@@ -1,0 +1,4 @@
+for (int i=7; i<=98; i+=7)
+            {
+              Console.WriteLine(i);
+            }
