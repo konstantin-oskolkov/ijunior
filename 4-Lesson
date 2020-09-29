@@ -1,0 +1,15 @@
+            string password, curentPassword;
+            Console.Write("Введите новый пароль: ");
+            curentPassword = Console.ReadLine();
+            Console.Clear();
+            for (sbyte tryCount = 2; tryCount >= 0; --tryCount)
+            {
+                Console.WriteLine("Введите пароль: ");
+                password = Console.ReadLine();
+                if (curentPassword == password)
+                {
+                    Console.WriteLine("Пароль верный, запускаю вирус - Чернобыль)");
+                    break;
+                }
+                Console.WriteLine($"\nНе верный пароль, у вас осталось {tryCount} попыток.\n");                
+            }
