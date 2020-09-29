@@ -43,8 +43,7 @@
                         while (tryCount-- > 0)
                         {
                             Console.Write(" Какое число: ");
-                            userInputNamber = Convert.ToInt32(Console.ReadLine());
-
+                               userInputNamber = Convert.ToInt32(Console.ReadLine());
                             if (userInputNamber == number)
                             {
                                 Console.WriteLine(" Все верно, число: " + number + "\n");
@@ -82,10 +81,8 @@
                             if (userInput == endCycle)
                             {
                                 Console.WriteLine("\n Для выхода нажмите любую клавишу.");
-                                break;
                             }
                             break;
                         }
-
                 }
             }
