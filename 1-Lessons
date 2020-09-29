@@ -1,24 +1,91 @@
-[StartCode]
- {   // Общие данные
-            char simbolOfCoins = "Z" // Название игровой валюты
-            sbyte lossOfHealthDueToPoisoning = -12; // Трата очков жизни при отравлении
-            short maximumHpMonster = 760; // Максимальное значение жизни монстра при поедании ...
-            short maximumHpGavrusha = 300; // Максимальное значение жизни героя при выпивании ...
-            long maximumCoinsGavrusha = 9999999; //Максимальное количество монет в инвентаре героя
-            ulong maximumCoinsInShop = 999999; //Максимальное количество монет в инвентаре магазина
-            uint maximumCoinsInBox = 140; //Максимальное количество монет выпадающих из ящиков
-            
-            // Параметры для монстра
-            string bigMonster = "Монстр"; //NPC
-            int moneyMonster = 134682; //количество денег в инвентаре монстра
-            byte hpMonster = 530; //количество жизни у монстра
-            float regenirationLiveMonsterPerSecond = 4.5f; // регенерация жизни монстра в секунду
+            string name, select, userInput = "no", endCycle = "exit";
+            int age, yearOfBirth, userInputNamber, number, lower, larger, tryCount;
+            Console.WindowHeight = 50;
+            Console.WindowWidth = 100;
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Clear();
+            Console.WriteLine(" Доброе время суток пользователь.");
+            Console.WriteLine(" Что вы хотите?");
+            while (endCycle != userInput)
+            {
+                Console.WriteLine("\n (1) - Ввести имя и год рождения\n (2) - Игра \"Угадай число\"\n (3) - Очистить консоль\n (4) - Выход\n");
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(" Что выберите - ");
+                select = Console.ReadLine();
+                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                Console.ForegroundColor = ConsoleColor.Black;
+                switch (select)
+                {
+                    case "1":
+                        {
+                            Console.Write("\n Ваше имя: ");
+                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            name = Console.ReadLine();
+                            Console.BackgroundColor = ConsoleColor.DarkYellow;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write(" Год рождения: ");
+                            Console.ForegroundColor = ConsoleColor.DarkBlue;
+                            yearOfBirth = Convert.ToInt32(Console.ReadLine());
+                            age = 2020 - yearOfBirth;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.WriteLine($"\n Добро пожаловать {name} Ваш возраст {age} лет.");
+                        }
+                        break;
+                    case "2":
+                        Random rand = new Random();
+                        number = rand.Next(0, 101);
+                        lower = rand.Next(number - 5, number);
+                        larger = rand.Next(number + 3, number + 5);
+                        Console.WriteLine("\n Число от " + lower + " до " + larger);
+                        tryCount = 3;
+                        while (tryCount-- > 0)
+                        {
+                            Console.Write(" Какое число: ");
+                            userInputNamber = Convert.ToInt32(Console.ReadLine());
 
-            // Параметры для героя
-            string heroyGavrusha = "Гаврюша"; //Игрок
-            int moneyGavrusha = 10; //количество денег в инвентаре героя
-            byte hpGavrusha = 100; //количество жизни у героя
-            float regenirationLiveGavrushaPerSecond = 2.5f; // регенерация жизни героя в секунду
-           
-        }
-[EndCode]
+                            if (userInputNamber == number)
+                            {
+                                Console.WriteLine(" Все верно, число: " + number + "\n");
+                                break;
+                            }
+                            if (tryCount <= 0)
+                            {
+                                Console.BackgroundColor = ConsoleColor.White;
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(" ВЫ ПРОИГРАЛИ, ЧИСЛО БЫЛО: " + number + "\n");
+                                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                break;
+                            }
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.WriteLine(" попробуй еще\n");
+                                Console.BackgroundColor = ConsoleColor.DarkYellow;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                            }
+                        }
+                        break;
+                    case "3":
+                        {
+                            Console.Clear();
+                        }
+                        break;
+                    case "4":
+                        {
+                            Console.WriteLine("\n   (4)  -  Для выхода\n (Enter) - Для продолжения\n");
+                            Console.Write(" Ваше действие - ");
+                            endCycle = "4";
+                            userInput = Console.ReadLine();
+                            if (userInput == endCycle)
+                            {
+                                Console.WriteLine("\n Для выхода нажмите любую клавишу.");
+                                break;
+                            }
+                            break;
+                        }
+
+                }
+            }
