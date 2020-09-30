@@ -1,18 +1,16 @@
-            string name, line;
-            int repitChar;
+            string name, symbol;            
             Console.Write("Введите имя: ");
             name = Console.ReadLine();
             Console.Write("Введите символ: ");
-            line = Console.ReadLine();
-            repitChar = Convert.ToInt32(name.Length);
+            symbol = Console.ReadLine();            
             Console.WriteLine();
-            for (int i = -1; i <= repitChar; i ++)
-             {
-                 Console.Write(line);
-             }
-            Console.WriteLine("\n"+line + name + line);
-
-            for (int i = -1; i <= repitChar; i++)
+            for (int i = -1; i <= name.Length; i++)
             {
-                Console.Write(line);
+                Console.Write(symbol);
+            }
+            Console.WriteLine("\n" + symbol + name + symbol);
+
+            for (int i = -1; i <= name.Length; i++)
+            {
+                Console.Write(symbol);
             }
