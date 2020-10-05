@@ -1,0 +1,107 @@
+            string select;
+            int hillBatle = 3, drink;
+            float damageHero = 1, damageBoss = 1, loseLive = 1, bossLive = 1000, heroLive = 200, takeLive = 1;
+            Random randomDamageHero = new Random();           
+            Random randomDamageBoss = new Random();
+            Console.WriteLine(" Финальная битва с боссом");
+            Console.WriteLine("\n Приветствую странник, ты прошел множество сражений, \n превращая монстров в жижу, и наконец твой путь \n привел к боссу по кличке Босс" +
+                              " это очень опасный противник, \n но у тебя есть ряд заклинаний, которые тебе \n помогут победить босса по кличке (Босс), \n если только ты разумно ими распорядишься.\n");
+            Console.WriteLine(" Список заклинаний:");
+            Console.WriteLine("\n (1) Иссушитель - враг слабеет, а часть жизненных сил врага перетекает к вам " +
+                    "\n (2) Вспышка - сгусток фатонов наносит серьезный урон врагу,\n     но злит врага, из-за чего он начинает атаковать яростней" +
+                    "\n (3) Кровь мага - самое мощное заклинание, при его использовании маг\n     теряет часть жизни, но наносит больше урона врагу " +
+                    "\n (4) Бутыль мутного самогона, которая восстанавливает 100 хп за 1 глоток, но её хватит на 3 глотка");            
+            Console.WriteLine("\n В твоих руках судьба деревни, в которой остались три наркомана и вечно орущий старый кот.\n");
+            Console.WriteLine(" расклад таков: Ваша хп = 200, Босс = 1000 хп.");
+            while (bossLive > 0 && heroLive > 0)
+            {                
+                Console.Write("\n твой ход: ");
+                select = Console.ReadLine();              
+                switch (select)
+                {
+                    case "1":
+                        {
+                            damageBoss = randomDamageBoss.Next(0, 61);                            
+                            damageHero = randomDamageHero.Next(10, 41);
+                            bossLive -= damageHero;
+                            heroLive -= damageBoss-damageHero/100*50;
+                            takeLive = damageHero / 100 * 50;
+                            Console.WriteLine(" Вы перетянули: " + takeLive + " жизни врага себе");
+                            break;
+                        }
+                    case "2":
+                        {
+                            damageBoss = randomDamageBoss.Next(30, 71);                            
+                            damageHero = randomDamageHero.Next(60, 150);
+                            heroLive -= damageBoss;
+                            bossLive -= damageHero;
+                            break;
+                        }
+                    case "3":
+                        {
+                            damageBoss = randomDamageBoss.Next(0, 51);
+                            damageHero = randomDamageHero.Next(60, 200);
+                            loseLive = damageHero / 100 * 30;
+                            bossLive -= damageHero;
+                            heroLive -= damageBoss + loseLive;
+                            Console.WriteLine(" Ваша магия нанесла вам: " + loseLive + " урона");
+                            break;
+                        }
+                    case "4":
+                        {
+                            if (hillBatle >= 1)
+                            {                                                               
+                                drink = 100;
+                                if (heroLive >= 200)
+                                {
+                                    Console.WriteLine($"Вы не можете использовать горячительный напиток, пока ваша жизнь 200 или больше.");
+                                }
+                                if (heroLive>=100 && heroLive<200)
+                                {
+                                    heroLive = (drink-(heroLive-drink)) + heroLive;
+                                    bossLive -= 0;
+                                    hillBatle -= 1;
+                                    damageHero = 0;
+                                    damageBoss = 0;
+                                    Console.WriteLine($" осталось глотков - {hillBatle}");
+                                }
+                                if (heroLive <= 100)
+                                {
+                                    heroLive += drink;
+                                    bossLive -= 0;
+                                    hillBatle -= 1;
+                                    damageHero = 0;
+                                    damageBoss = 0;
+                                    Console.WriteLine($" осталось глотков - {hillBatle}");
+                                }                                
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ты все выпил, а пока ты пытался выжать хоть каплю живительного напитка, твой враг успел атаковать тебя.");
+                                damageBoss = randomDamageBoss.Next(0, 51);
+                                heroLive -= damageBoss;
+                                bossLive -= 0;
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            Console.WriteLine("ВАМ НЕ УДАСТСЯ СБЕЖАТЬ");
+                            damageBoss = randomDamageBoss.Next(0, 51);
+                            heroLive -= damageBoss;
+                            break;
+                        }
+                }                
+                Console.WriteLine($" Вы нанесли: {damageHero} урона");
+                Console.WriteLine($" Босс нанес вам: {damageBoss} урона\n");
+                Console.WriteLine($" Ваша жизнь: {heroLive} хп.");
+                Console.WriteLine($" жизнь Босса: {bossLive} хп.");                
+            }
+            if (bossLive <= 0)
+            {
+                Console.WriteLine($"\n Вы победили Босса, правда, как оказалось, он пытался восстановить деревню,\n наладить производство, права, соц. пакет и т.д.,\n но вам пофиг, вы все равно будете спать спокойно.");              
+            }            
+            if (heroLive <= 0)
+            {
+                Console.WriteLine($"\n Вы проиграли, а ваши кости пойдут на игрушки маленьким монстрятам.");              
+            }
