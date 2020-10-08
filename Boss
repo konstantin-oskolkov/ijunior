@@ -14,42 +14,42 @@
             Console.WriteLine(" расклад таков: Ваша хп = 200, Босс = 1000 хп.");
             while (bossLive > 0 && heroLive > 0)
             {
-                int damageBoss1 = randomDamage.Next(0, 61);
-                int damageBoss2 = randomDamage.Next(30, 71);
-                int damageBoss3 = randomDamage.Next(0, 51);
-                int damageHero1 = randomDamage.Next(10, 41);
-                int damageHero2 = randomDamage.Next(40, 121);
-                int damageHero3 = randomDamage.Next(80, 201);
+                int damageBossAfterDraining = randomDamage.Next(0, 61);
+                int damageBossStandard = randomDamage.Next(30, 71);
+                int damageBossWeakness = randomDamage.Next(0, 51);
+                int damageHeroDraining = randomDamage.Next(10, 41);
+                int damageHeroSpark = randomDamage.Next(40, 121);
+                int damageHeroBlood = randomDamage.Next(80, 201);
                 Console.Write("\n твой ход: ");
                 select = Console.ReadLine();
                 switch (select)
                 {
                     case "1":
                         {                           
-                            bossLive -= damageHero1;
-                            heroLive -= damageBoss1 - damageHero1 * takeLiveCalc;
-                            takeLive = damageHero1 * takeLiveCalc;
+                            bossLive -= damageHeroDraining;
+                            heroLive -= damageBossAfterDraining - damageHeroDraining * takeLiveCalc;
+                            takeLive = damageHeroDraining * takeLiveCalc;
                             Console.WriteLine(" Вы перетянули: " + takeLive + " жизни врага себе");
-                            damageHeroPrint = damageHero1;
-                            damageBossPrint = damageBoss1;
+                            damageHeroPrint = damageHeroDraining;
+                            damageBossPrint = damageBossAfterDraining;
                             break;
                         }
                     case "2":
                         {                            
-                            heroLive -= damageBoss2;
-                            bossLive -= damageHero2;
-                            damageHeroPrint = damageHero2;
-                            damageBossPrint = damageBoss2;
+                            heroLive -= damageBossStandard;
+                            bossLive -= damageHeroSpark;
+                            damageHeroPrint = damageHeroSpark;
+                            damageBossPrint = damageBossStandard;
                             break;
                         }
                     case "3":
                         {                            
-                            loseLive = damageHero3 * loseLiveCalc;
-                            bossLive -= damageHero3;
-                            heroLive -= damageBoss3 + loseLive;
+                            loseLive = damageHeroBlood * loseLiveCalc;
+                            bossLive -= damageHeroBlood;
+                            heroLive -= damageBossWeakness + loseLive;
                             Console.WriteLine(" Ваша магия нанесла вам: " + loseLive + " урона");
-                            damageHeroPrint = damageHero3;
-                            damageBossPrint = damageBoss3;
+                            damageHeroPrint = damageHeroBlood;
+                            damageBossPrint = damageBossWeakness;
                             break;
                         }
                     case "4":
@@ -76,16 +76,16 @@
                             else
                             {
                                 Console.WriteLine("Ты все выпил, а пока ты пытался выжать хоть каплю живительного напитка, твой враг успел атаковать тебя.");                               
-                                heroLive -= damageBoss3;                               
-                                damageBossPrint = damageBoss3;
+                                heroLive -= damageBossWeakness;                               
+                                damageBossPrint = damageBossWeakness;
                             }
                             break;
                         }
                     default:
                         {
                             Console.WriteLine("\n ВАМ НЕ УДАСТСЯ СБЕЖАТЬ\n");                            
-                            heroLive -= damageBoss3;
-                            damageBossPrint = damageBoss3;
+                            heroLive -= damageBossWeakness;
+                            damageBossPrint = damageBossWeakness;
                             damageHeroPrint = 0;
                             break;
                         }
