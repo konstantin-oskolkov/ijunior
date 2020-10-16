@@ -1,16 +1,27 @@
-            string name, symbol;            
-            Console.Write("Введите имя: ");
-            name = Console.ReadLine();
-            Console.Write("Введите символ: ");
-            symbol = Console.ReadLine();            
+            int[] matrix = new int[30];            
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                matrix[i] = r.Next(10, 90);
+                Console.Write(matrix[i] + "  ");
+            }
             Console.WriteLine();
-            for (int i = -1; i <= name.Length; i++)
-            {
-                Console.Write(symbol);
-            }
-            Console.WriteLine("\n" + symbol + name + symbol);
-
-            for (int i = -1; i <= name.Length; i++)
-            {
-                Console.Write(symbol);
-            }
+            for (int j = 0; j < matrix.Length; j++)
+            {               
+                if (j<=0)
+                {
+                    if(matrix[j] > matrix[j + 1])
+                    {
+                        Console.Write(matrix[j] + "  ");
+                    }
+                }
+                else if (j > matrix.Length)
+                {
+                    break;
+                }
+                else if (j > 0 && j <= matrix.Length)
+                {
+                    if (matrix[j] > matrix[j - 1] && matrix[j] > matrix[j + 1])
+                    {
+                        Console.Write(matrix[j] + "  ");
+                    }
+                }
