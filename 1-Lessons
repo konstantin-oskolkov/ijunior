@@ -1,5 +1,5 @@
-           int[,] massive = { { 2, 5, 8, 3, 4, 6 }, {4, 7, 5, 6, 2, 9 } };
-           int sumLineTwo = 0, multiplyFirstColumn;            
+            int[,] massive = { { 9, 5, 8, 3, 4, 6 }, { 4, 7, 5, 6, 2, 9 } };
+            int sumLineTwo = 0, multiplyFirstColumn = 1;
              Console.WriteLine("\nМатрица: ");
             for (int i = 0; i < massive.GetLength(0); i++)
             {
@@ -8,13 +8,16 @@
                     Console.Write(massive[i, j] + "  ");
                 }
                 Console.WriteLine();
-            }            
-             Console.Write("\nсумма второй строки: ");
-            for (int i = 0; i < massive.GetLength(1); i++)
-            {                
-                sumLineTwo += massive[0, i];               
             }
-             Console.WriteLine(sumLineTwo);            
-              Console.Write("\nпроизведение первого столбца: ");
-               multiplyFirstColumn = massive[0, 0] * massive[1, 0];
-                Console.WriteLine(multiplyFirstColumn);
+             Console.Write("\nсумма второй строки: ");           
+            for (int i = 0; i < massive.GetLength(1); i++)
+            {
+                sumLineTwo += massive[0, i];
+            }
+            Console.WriteLine(sumLineTwo);
+            Console.Write("\nпроизведение первого столбца: ");
+            for (int i = 0; i < massive.GetLength(0); i++)
+            {
+               multiplyFirstColumn *= massive[i, 0];                
+            }
+            Console.WriteLine(multiplyFirstColumn);
