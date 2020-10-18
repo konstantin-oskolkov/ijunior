@@ -1,27 +1,31 @@
-            int[] matrix = new int[30];            
-            for (int i = 0; i < matrix.GetLength(0); i++)
+           int[] matrix = new int[30];            
+            Random namberMassive = new Random();            
+            for (int i = 0; i < matrix.Length; i++)
             {
-                matrix[i] = r.Next(10, 90);
+                matrix[i] = namberMassive.Next(10, 90);
                 Console.Write(matrix[i] + "  ");
             }
             Console.WriteLine();
             for (int j = 0; j < matrix.Length; j++)
-            {               
-                if (j<=0)
+            {
+                if (j <= 0)
                 {
-                    if(matrix[j] > matrix[j + 1])
+                    if (matrix[j] > matrix[j + 1])
                     {
                         Console.Write(matrix[j] + "  ");
                     }
-                }
-                else if (j > matrix.Length)
-                {
-                    break;
-                }
-                else if (j > 0 && j <= matrix.Length)
+                }                
+                if (j > 0 && j < matrix.Length-1)
                 {
                     if (matrix[j] > matrix[j - 1] && matrix[j] > matrix[j + 1])
                     {
                         Console.Write(matrix[j] + "  ");
                     }
+                }
+                if (j == matrix.Length-1)
+                {
+                    if (matrix[j] > matrix[j - 1])
+                    {
+                        Console.Write(matrix[j] + "  ");
+                    }                   
                 }
