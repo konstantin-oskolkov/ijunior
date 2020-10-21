@@ -1,15 +1,92 @@
-            string password, curentPassword;
-            Console.Write("Введите новый пароль: ");
-            curentPassword = Console.ReadLine();
-            Console.Clear();
-            for (sbyte tryCount = 2; tryCount >= 0; --tryCount)
+            int summMassive = 0;
+            bool work = true;
+            int[] massive = new int[0];
+            int[] tempMassive = new int[0];
+            while (work)
             {
-                Console.WriteLine("Введите пароль: ");
-                password = Console.ReadLine();
-                if (curentPassword == password)
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.WriteLine("\n данные по массиву ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write("размер массива: ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(massive.Length);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("элементы массива: ");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                for (int i = 0; i < massive.Length; i++)
                 {
-                    Console.WriteLine("Пароль верный, запускаю вирус - Чернобыль)");
-                    break;
+                    Console.Write(massive[i] + " | ");
                 }
-                Console.WriteLine($"\nНе верный пароль, у вас осталось {tryCount} попыток.\n");                
-            }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("\nсумма массива: ");
+                if (summMassive == 0)
+                {
+                    Console.Write("-");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write(summMassive);
+                }
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("\n\n(1) - создать массив\n(2) - расширить массив\n" +
+                                  "(summ) - вывод суммы массива\n(exit) - выход\n");
+                Console.Write("введите команду: ");
+                string f = Console.ReadLine();
+                switch (f)
+                {
+                    case "1":
+                        {
+                            Console.Write("введите количество элементов массива: ");
+                            massive = new int[Convert.ToInt32(Console.ReadLine())];
+                            for (int i = 0; i < massive.Length; i++)
+                            {
+                                Console.Write($"введите {i + 1} элемент: ");
+                                massive[i] = Convert.ToInt32(Console.ReadLine());
+                            }
+                            summMassive = 0;
+                        }
+                        break;
+                    case "summ":
+                        {
+                            for (int i = 0; i < massive.Length; i++)
+                            {
+                                summMassive += massive[i];
+                            }
+                        }
+                        break;
+                    case "2":
+                        {
+                            Console.Write("\nна сколько элементов расширить массив?: ");
+                            tempMassive = new int[massive.Length + Convert.ToInt32(Console.ReadLine())];
+                            for (int i = massive.Length; i < tempMassive.Length; i++)
+                            {
+                                Console.Write($"введите {i + 1} элемент: ");
+                                tempMassive[i] = Convert.ToInt32(Console.ReadLine());
+                            }
+                            for (int i = 0; i < massive.Length; i++)
+                            {
+                                tempMassive[i] = massive[i];
+                            }
+                            massive = tempMassive;
+                            summMassive = 0;
+                        }
+                        break;
+                    case "exit":
+                        {
+                            work = false;
+                        }
+                        break;
+                    default:
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("\nкоманда не верна, попробуйте снова");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.ReadKey();
+                        }
+                        break;
+                    }
+                }
