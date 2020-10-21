@@ -1,28 +1,24 @@
-            int[] matrix = new int[30];
-            int lostLocMax = matrix.Length - 1;
-            Random namberMassive = new Random();            
-            
-            for (int i = 0; i < matrix.Length; i++)
-            {
-                matrix[i] = namberMassive.Next(10, 90);
-                Console.Write(matrix[i] + "  ");
-            }
-            Console.WriteLine();
-            if (matrix[0] > matrix[1])
-            {
-                Console.Write(matrix[0] + "  ");
-            }
-            for (int j = 0; j < matrix.Length; j++)
-            {
-                if (j > 0 && j < matrix.Length - 1)
-                {
-                    if (matrix[j] > matrix[j - 1] && matrix[j] > matrix[j + 1])
-                    {
-                        Console.Write(matrix[j] + "  ");
-                    }
-                }
-            }
-            if (matrix[lostLocMax] > matrix[lostLocMax-1])
-                {                
-                    Console.Write(matrix[lostLocMax] + "  ");                
-                }
+             int[] matrix = new int[30];
+             int lostLocMax = matrix.Length - 1;
+             Random namberMassive = new Random();
+             for (int i = 0; i < matrix.Length; i++)
+             {
+                 matrix[i] = namberMassive.Next(10, 90);
+                 Console.Write(matrix[i] + "  ");
+             }
+             Console.WriteLine();
+             if (matrix[0] >= matrix[1])
+             {
+                 Console.Write(matrix[0] + "  ");
+             }
+             for (int j = 1; j < matrix.Length-1; j++)
+             {                
+               if (matrix[j] >= matrix[j - 1] && matrix[j] >= matrix[j + 1])
+               {
+                 Console.Write(matrix[j] + "  ");
+               }               
+             }
+             if (matrix[lostLocMax] >= matrix[lostLocMax - 1])
+             {
+                 Console.Write(matrix[lostLocMax] + "  ");
+             }
