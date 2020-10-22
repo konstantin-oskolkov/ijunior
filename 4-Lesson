@@ -1,10 +1,10 @@
-            int summMassive = 0;
+           int summMassive = 0;
             bool work = true;
             int[] massive = new int[0];
             int[] tempMassive = new int[0];
             while (work)
             {
-                Console.Clear();
+                Console.Clear();                
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.BackgroundColor = ConsoleColor.White;
                 Console.WriteLine("\n данные по массиву ");
@@ -30,13 +30,14 @@
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write(summMassive);
+                    summMassive = 0;
                 }
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("\n\n(1) - создать массив\n(2) - расширить массив\n" +
                                   "(summ) - вывод суммы массива\n(exit) - выход\n");
                 Console.Write("введите команду: ");
-                string f = Console.ReadLine();
-                switch (f)
+                string selectWork = Console.ReadLine();
+                switch (selectWork)
                 {
                     case "1":
                         {
@@ -46,15 +47,14 @@
                             {
                                 Console.Write($"введите {i + 1} элемент: ");
                                 massive[i] = Convert.ToInt32(Console.ReadLine());
-                            }
-                            summMassive = 0;
+                            }                            
                         }
                         break;
                     case "summ":
-                        {
+                        {                            
                             for (int i = 0; i < massive.Length; i++)
                             {
-                                summMassive += massive[i];
+                              summMassive += massive[i];
                             }
                         }
                         break;
@@ -71,8 +71,7 @@
                             {
                                 tempMassive[i] = massive[i];
                             }
-                            massive = tempMassive;
-                            summMassive = 0;
+                            massive = tempMassive;                            
                         }
                         break;
                     case "exit":
@@ -88,5 +87,5 @@
                             Console.ReadKey();
                         }
                         break;
-                    }
                 }
+            }
