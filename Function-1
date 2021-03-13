@@ -1,0 +1,172 @@
+static void Main(string[] args)
+        {            
+            string[] profession;
+            string[] names;
+            int count = 0;
+            HolderDatabases(out names, out profession);
+            WorkingWithDatabases(names, profession, ref count);
+        }
+
+static void WorkingWithDatabases(string[] names, string[] profession, ref int count)
+            {
+                bool workingDatabases = true;
+                while (workingDatabases)
+                {
+                DrowInterface();
+                string joice = Console.ReadLine();
+                    switch (joice)
+                    {
+                        case "1":
+                            WriteChar(names, profession);
+                        Console.WriteLine(" для продолжения нажмите клавишу");
+                        Console.ReadKey();
+                            break;
+                        case "2":
+                            FindChar(names, profession);
+                        Console.WriteLine(" для продолжения нажмите клавишу");
+                        Console.ReadKey();
+                        break;
+                        case "3":
+                            names = RemoveChar(names, out count);
+                            profession = RemoveProfession(profession, ref count);
+                        Console.WriteLine(" для продолжения нажмите клавишу");
+                        Console.ReadKey();
+                        break;
+                        case "4":
+                            names = AddChar(names);
+                            profession = AddProfession(profession);
+                        Console.WriteLine(" для продолжения нажмите клавишу");
+                        Console.ReadKey();
+                        break;
+                        case "5":
+                            workingDatabases = false;
+                            break;
+                        default:
+                            Console.WriteLine(" Введена не корректная команда!");
+                        Console.ReadKey();
+                        break;
+                    }
+                    Console.Clear();
+                }
+            }
+
+static void DrowInterface()
+        {
+            Console.WriteLine(" Работа с досье сотрудников:");
+            Console.Write(" Выберите действие:\n 1 - Вывести список всех сотрудников" +
+                "\n 2 - Найти сотрудника по фамилии\n 3 - Удолить досье сотрудника" +
+                "\n 4 - Добавить досье сотрудника\n 5 - Выход из программы\n \n №: ");
+        }
+
+static void WriteChar(string[] names, string[] profession)
+            {
+            Console.Write("\n Список всех сотрудников: ");
+            int count = 0;
+                string collector = "";
+                for (int i = 0; i < names.Length; i++)
+                {
+                    collector += ((++count) + ": " + names[i] + " - " + profession[i] + ";  ");
+                }
+                Console.WriteLine(collector);
+            }
+
+static void FindChar(string[] names, string[] profession)
+            {
+                Console.Write("\n Введите фамилию для поиска досье: ");
+                string worker = Console.ReadLine();
+                bool workerIsFind = false;
+                for (int i = 0; i < names.Length; i++)
+                {
+                    if (worker.ToLower() == names[i].ToLower())
+                    {
+                        Console.WriteLine(" Сотрудник - " + names[i] + " - " + profession[i]);
+                        workerIsFind = true;
+                    }
+                }
+                if (workerIsFind == false)
+                {
+                    Console.WriteLine(" Нет такого сотрудника");
+                }
+            }
+
+static string[] RemoveChar(string[] names, out int count)
+            {
+                Console.Write(" Введите фамилию работника для удоления: ");
+                count = 0;
+                string worker = Console.ReadLine();
+
+                string[] tempNames = new string[names.Length - 1];
+
+                for (int i = 0; i < names.Length; i++)
+                {
+                    if (worker.ToLower() == names[i].ToLower())
+                    {
+                        count = i;
+                        Console.WriteLine(" Сотрудник - " + names[i] + " - удален");
+                    }
+                }            
+                for (int i = 0; i < count; i++)
+                {
+                    tempNames[i] = names[i];
+                }
+                for (int i = count + 1; i < names.Length; i++)
+                {
+                    tempNames[i - 1] = names[i];
+                }
+                names = tempNames;
+                return names;
+            }
+
+static string[] RemoveProfession(string[] profession, ref int count)
+            {                                
+                string[] tempProfession = new string[profession.Length - 1];
+                
+                for (int i = 0; i < count; i++)
+                {
+                    tempProfession[i] = profession[i];
+                }
+                for (int i = count + 1; i < profession.Length; i++)
+                {
+                    tempProfession[i - 1] = profession[i];
+                }
+                profession = tempProfession;                                
+                return profession;
+            }
+
+static string[] AddChar(string[] names)
+            {
+                Console.Write(" Введите фамилию нового работника: ");
+                string[] tempNames = new string[names.Length + 1];  
+                for (int i = names.Length; i < tempNames.Length; i++)
+                {
+                    tempNames[i] = Console.ReadLine();
+                }
+                for (int i = 0; i < names.Length; i++)
+                {
+                    tempNames[i] = names[i];
+                }
+                names = tempNames;                
+                return names;
+            }
+
+static string[] AddProfession(string[] profession)
+            {
+                string[] tempProfession = new string[profession.Length + 1];
+                Console.Write(" Введите проффесию работника: ");
+                for (int i = profession.Length; i < tempProfession.Length; i++)
+                {
+                    tempProfession[i] = Console.ReadLine();
+                }
+                for (int i = 0; i < profession.Length; i++)
+                {
+                    tempProfession[i] = profession[i];
+                }
+                profession = tempProfession;
+                return profession;
+            }
+
+static void HolderDatabases(out string[] names, out string[] profession)
+            {
+                names = new string[] { "Пупкин", "Ухов", "Блинков", "Сомова" };
+                profession = new string[] { "мойщик", "охрана", "секретарь", "дилектол" };
+            } 
