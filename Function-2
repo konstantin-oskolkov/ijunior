@@ -1,73 +1,70 @@
-        static void Main(string[] args)
-        {
-            float helth = 55.0f;
-            float maxHelth = 20.0f;
-            float mana = 55.0f;
-            float maxMana = 20.0f;
-            string endCycle = " ";
-
-            while (endCycle != "1")
-            {
-                DrawInterface(ConsoleColor.DarkBlue, 1);
-                DrawBar(helth, maxHelth, ConsoleColor.Red, 4, '_');
-                DrawBar(mana, maxMana, ConsoleColor.Blue, 5, '_');
-                Console.SetCursorPosition(1, 7);
-                Console.Write("Введите процент манны: ");
-                helth = ReadValue(helth, 7);
-                Console.SetCursorPosition(1, 8);
-                Console.Write("Введите процент HP: ");
-                mana = ReadValue(mana, 8);
-                Console.SetCursorPosition(1, 8);
-                Console.Write(" Для продолжения нажмите любую клавишу.\n Желаете закончить нажмите 1 :");
-                endCycle = Console.ReadLine();
-                Console.Clear();
-            } 
-        }
-        static void DrawBar(float value, float maxValue, ConsoleColor color, int position, char symbol)
-        {
-            ConsoleColor defaultColor = Console.BackgroundColor;
-            int blueElectricalTape = 0;
-            string bar = "";
-            if (value <= 100)
-            {
-                for (float i = 0; i < (value / 5); i++)
-                {
-                    bar += symbol;
-                    blueElectricalTape++;
-                }
-                Console.SetCursorPosition(1, position);
-                Console.Write('[');
-                Console.BackgroundColor = color;
-                Console.Write(bar);
-                Console.BackgroundColor = defaultColor;
-                bar = "";
-                for (float i = blueElectricalTape; i < maxValue; i++)
-                {
-                    bar += symbol;
-                }
-                Console.Write(bar + ']' + ' ' + value + " %");
-            }
-            else
-            {
-                Console.SetCursorPosition(1, position);
-                Console.Write('[');
-                Console.BackgroundColor = color;
-                Console.Write($"____________________");
-                Console.BackgroundColor = defaultColor;
-                Console.Write($"] {value} % Временный БАФ!!!!");
-            }
-        }
-        static void DrawInterface(ConsoleColor color, int position)
-        {
-            Console.SetCursorPosition(1, position);
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.DarkBlue;            
-            Console.WriteLine("<< Helth & Mana Bar (отрисовка заполнености кратна 5%) >>");            
-            Console.ForegroundColor = ConsoleColor.White;            
-            Console.BackgroundColor = ConsoleColor.Black;
-        }
-        static float ReadValue(float value, int position)
-        {
-            value = Convert.ToSingle(Console.ReadLine());
-            return value;           
-        }
+static void Main(string[] args)
+{
+ int helth = 5;
+ int maxHelth = 10;
+ int mana = 5;
+ int maxMana = 10;
+ string endCycle;
+ bool endWhile = true;            
+ while (endWhile)
+  {
+    DrawInterface(ConsoleColor.DarkBlue, 1);
+    DrawBar(helth, maxHelth, ConsoleColor.Red, 4, '_');
+    DrawBar(mana, maxMana, ConsoleColor.Blue, 5, '_');
+    Console.SetCursorPosition(1, 7);
+    Console.Write("Введите процент HP: ");                
+    helth = Convert.ToInt32(Console.ReadLine()) / 10;
+    Console.SetCursorPosition(1, 8);
+    Console.Write("Введите процент манны: ");
+    mana = Convert.ToInt32(Console.ReadLine()) / 10;
+    Console.SetCursorPosition(1, 8);
+    Console.Write(" Для продолжения нажмите любую клавишу.\n Желаете закончить нажмите 1 :");
+    endCycle = Console.ReadLine();
+    Console.Clear();
+    if (endCycle == "1")
+     {
+       endWhile = false;
+     }                
+   } 
+}
+static void DrawBar(int value, int maxValue, ConsoleColor color, int position, char symbol)
+{
+ ConsoleColor defaultColor = Console.BackgroundColor;            
+ string bar = "";
+ if (value <= 10)
+ {
+  for (int i = 0; i < value; i++)
+  {
+   bar += symbol;                    
+  }
+  Console.SetCursorPosition(1, position);
+  Console.Write('[');
+  Console.BackgroundColor = color;                
+  Console.Write(bar);
+  Console.BackgroundColor = defaultColor;
+  bar = "";
+  for (int i = value; i < maxValue; i++)
+  {
+   bar += symbol;                    
+  }
+  Console.Write(bar + ']' + ' ' + (value*10) + " %");
+ }
+ else
+ {
+  Console.SetCursorPosition(1, position);
+  Console.Write('[');
+  Console.BackgroundColor = color;
+  Console.Write($"__________");
+  Console.BackgroundColor = defaultColor;
+  Console.Write($"] {value * 10} % Временный БАФ!!!!");
+ }
+}
+static void DrawInterface(ConsoleColor color, int position)
+{
+ Console.SetCursorPosition(1, position);
+ Console.BackgroundColor = ConsoleColor.White;
+ Console.ForegroundColor = ConsoleColor.DarkBlue;            
+ Console.WriteLine("<< Helth & Mana Bar >>");            
+ Console.ForegroundColor = ConsoleColor.White;            
+ Console.BackgroundColor = ConsoleColor.Black;
+}
