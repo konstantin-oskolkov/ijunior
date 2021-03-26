@@ -4,26 +4,27 @@ static void Main(string[] args)
  int maxHelth = 10;
  int mana = 5;
  int maxMana = 10;
+ int converter = 10;
  string endCycle;
- bool endWhile = true;            
- while (endWhile)
+ bool isExit = false;            
+ while (isExit == false)
   {
     DrawInterface(ConsoleColor.DarkBlue, 1);
-    DrawBar(helth, maxHelth, ConsoleColor.Red, 4, '_');
-    DrawBar(mana, maxMana, ConsoleColor.Blue, 5, '_');
+    DrawBar(helth, maxHelth, converter, ConsoleColor.Red, 4, '_');
+    DrawBar(mana, maxMana, converter, ConsoleColor.Blue, 5, '_');
     Console.SetCursorPosition(1, 7);
     Console.Write("Введите процент HP: ");                
-    helth = Convert.ToInt32(Console.ReadLine()) / 10;
+    helth = Convert.ToInt32(Console.ReadLine()) / converter;
     Console.SetCursorPosition(1, 8);
     Console.Write("Введите процент манны: ");
-    mana = Convert.ToInt32(Console.ReadLine()) / 10;
+    mana = Convert.ToInt32(Console.ReadLine()) / converter;
     Console.SetCursorPosition(1, 8);
     Console.Write(" Для продолжения нажмите любую клавишу.\n Желаете закончить нажмите 1 :");
     endCycle = Console.ReadLine();
     Console.Clear();
     if (endCycle == "1")
      {
-       endWhile = false;
+       isExit = true;
      }                
    } 
 }
@@ -47,7 +48,7 @@ static void DrawBar(int value, int maxValue, ConsoleColor color, int position, c
   {
    bar += symbol;                    
   }
-  Console.Write(bar + ']' + ' ' + (value*10) + " %");
+  Console.Write(bar + ']' + ' ' + (value * converter) + " %");
  }
  else
  {
@@ -56,7 +57,7 @@ static void DrawBar(int value, int maxValue, ConsoleColor color, int position, c
   Console.BackgroundColor = color;
   Console.Write($"__________");
   Console.BackgroundColor = defaultColor;
-  Console.Write($"] {value * 10} % Временный БАФ!!!!");
+  Console.Write($"] {value * converter} % Временный БАФ!!!!");
  }
 }
 static void DrawInterface(ConsoleColor color, int position)
