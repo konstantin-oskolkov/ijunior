@@ -5,13 +5,14 @@ static void Main(string[] args)
  int mana = 5;
  int maxMana = 10;
  int converter = 10;
+ int limitDrawbar = 10;
  string endCycle;
  bool isExit = false;            
  while (isExit == false)
   {
     DrawInterface(ConsoleColor.DarkBlue, 1);
-    DrawBar(helth, maxHelth, converter, ConsoleColor.Red, 4, '_');
-    DrawBar(mana, maxMana, converter, ConsoleColor.Blue, 5, '_');
+    DrawBar(helth, maxHelth, converter,limitDrawbar, ConsoleColor.Red, 4, '_');
+    DrawBar(mana, maxMana, converter,limitDrawbar, ConsoleColor.Blue, 5, '_');
     Console.SetCursorPosition(1, 7);
     Console.Write("Введите процент HP: ");                
     helth = Convert.ToInt32(Console.ReadLine()) / converter;
@@ -28,11 +29,11 @@ static void Main(string[] args)
      }                
    } 
 }
-static void DrawBar(int value, int maxValue, ConsoleColor color, int position, char symbol)
+static void DrawBar(int value, int maxValue,int limitDrawbar, ConsoleColor color, int position, char symbol)
 {
  ConsoleColor defaultColor = Console.BackgroundColor;            
  string bar = "";
- if (value <= 10)
+ if (value <= limitDrawbar)
  {
   for (int i = 0; i < value; i++)
   {
