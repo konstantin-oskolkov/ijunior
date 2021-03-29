@@ -1,160 +1,145 @@
-                static void Main(string[] args)
-		{
-			string[] profession;
-			string[] names;
-			names = new string[] { "Пупкин", "Ухов", "Блинков", "Сомова" };
-			profession = new string[] { "мойщик", "охрана", "секретарь", "дилектол" };
+      static void Main(string[] args)
+      {
+         string[] profession = new string[] { "Пупкин", "Ухов", "Блинков", "Сомова" };
+         string[] names = new string[] { "мойщик", "охрана", "секретарь", "дилектол" };
 
-			WorkingWithDatabases(names, profession);
-		}
+         WorkingWithDossier(names, profession);
+      }
 
-		static void WorkingWithDatabases(string[] names, string[] profession)
-		{
-			bool workingDatabases = true;
-			while (workingDatabases)
-			{
-				DrowInterface();
+      static void WorkingWithDossier(string[] names, string[] profession)
+      {
+         bool endWorkWithUserMenu = true;
+         while (endWorkWithUserMenu)
+         {
+            string selectedMenu = PrintUserMenu();
 
-				string joice = Console.ReadLine();
-				switch (joice)
-				{
-					case "1":
+            switch (selectedMenu)
+            {
+               case "1":
+                  PrintDossier(names, profession);
+                  break;
 
-						WriteChar(names, profession);
+               case "2":
+                  FindDossier(names, profession);
+                  break;
 
-						Console.WriteLine(" для продолжения нажмите клавишу");
-						Console.ReadKey();
-						break;
+               case "3":
+                  RemoveDossier(ref names, ref profession);
+                  break;
 
-					case "2":
+               case "4":
+                  names = AddDossier("Username: ", names);
+                  profession = AddDossier("Profession: ", profession);
+                  break;
 
-						FindChar(ref names, ref profession);
+               case "5":
+                  endWorkWithUserMenu = false;
+                  break;
 
-						Console.WriteLine(" для продолжения нажмите клавишу");
-						Console.ReadKey();
-						break;
+               default:
+                  Console.WriteLine(" Введена не корректная команда!");
+                  break;
+            }
+            Console.WriteLine(" для продолжения нажмите клавишу");
+            Console.ReadKey();
+            Console.Clear();
+         }
+      }
 
-					case "3":
+      static string PrintUserMenu()
+      {
+         Console.WriteLine(" Работа с досье сотрудников:");
+         Console.Write(" Выберите действие:\n 1 - Вывести список всех сотрудников" +
+          "\n 2 - Найти сотрудника по фамилии\n 3 - Удолить досье сотрудника" +
+          "\n 4 - Добавить досье сотрудника\n 5 - Выход из программы\n \n №: ");
+         string selectedMenu = Console.ReadLine();
+         return selectedMenu;
+      }
 
-						RemoveProfession(ref names, ref profession);
+      static void PrintDossier(string[] names, string[] profession)
+      {
+         int numberOfChar = 0;
+         string allChar = "";
 
-						Console.WriteLine(" для продолжения нажмите клавишу");
-						Console.ReadKey();
-						break;
+         Console.Write(" Список всех сотрудников: ");
 
-					case "4":
+         for (int i = 0; i < names.Length; i++)
+         {
+            allChar += ($"{++numberOfChar}: {names[i]} - {profession[i]}; ");
+         }
 
-						names = AddChar("Username: ", names);
-						profession = AddChar("Profession: ", profession);
+         Console.WriteLine(allChar);
+      }
 
-						Console.WriteLine(" для продолжения нажмите клавишу");
-						Console.ReadKey();
-						break;
+      static void FindDossier(string[] names, string[] profession)
+      {
+         string worker;
+         bool workerIsFind = false;
 
-					case "5":
-						workingDatabases = false;
-						break;
+         Console.Write(" Введите фамилию для поиска досье: ");
+         worker = Console.ReadLine();
 
-					default:
-						Console.WriteLine(" Введена не корректная команда!");
-						Console.ReadKey();
-						break;
-				}
-				Console.Clear();
-			}
-		}
+         for (int i = 0; i < names.Length; i++)
+         {
+            if (worker.ToLower() == names[i].ToLower())
+            {
+               Console.WriteLine(" Сотрудник - " + names[i] + " - " + profession[i]);
+               workerIsFind = true;
+            }
+         }
+         if (workerIsFind == false)
+         {
+            Console.WriteLine(" Нет такого сотрудника");
+         }
+      }
 
-		static void DrowInterface()
-		{
-			Console.WriteLine(" Работа с досье сотрудников:");
-			Console.Write(" Выберите действие:\n 1 - Вывести список всех сотрудников" +
-				"\n 2 - Найти сотрудника по фамилии\n 3 - Удолить досье сотрудника" +
-				"\n 4 - Добавить досье сотрудника\n 5 - Выход из программы\n \n №: ");
-		}
+      static void RemoveDossier(ref string[] names, ref string[] profession)
+      {
+         PrintDossier(names, profession);
+         Console.Write(" Введите фамилию работника для удаления: ");
+         string worker = Console.ReadLine();
 
-		static void WriteChar(string[] names, string[] profession)
-		{
-			int numberOfChar = 0;
-			string allChar = "";
+         string[] tempProfession = new string[profession.Length - 1];
+         string[] tempEmployee = new string[names.Length - 1];
 
-			Console.Write(" Список всех сотрудников: ");
+         for (int i = 0; i < names.Length; i++)
+         {
+            if (worker.ToLower() == names[i].ToLower())
+            {
 
-			for (int i = 0; i < names.Length; i++)
-			{
-				allChar += ($"{++numberOfChar}: {names[i]} - {profession[i]}; ");
-			}
+               Console.WriteLine(" Сотрудник - " + names[i] + " - удален");
 
-			Console.WriteLine(allChar);
-		}
+               for (int j = 0; j < i; j++)
+               {
+                  tempEmployee[j] = names[j];
+                  tempProfession[j] = profession[j];
+               }
+               for (int j = i + 1; j < names.Length; j++)
+               {
+                  tempEmployee[j - 1] = names[j];
+                  tempProfession[j - 1] = profession[j];
+               }
+               names = tempEmployee;
+               profession = tempProfession;
+            }
+         }
+      }
 
-		static void FindChar(ref string[] names, ref string[] profession)
-		{
-			string worker;
-			bool workerIsFind = false;
+      static string[] AddDossier(string text, string[] employee)
+      {
+         string[] tempEmployee = new string[employee.Length + 1];
+         Console.Write(text);
 
-			Console.Write(" Введите фамилию для поиска досье: ");
-			worker = Console.ReadLine();
+         for (int i = employee.Length; i < tempEmployee.Length; i++)
+         {
+            tempEmployee[i] = Console.ReadLine();
+         }
 
-			for (int i = 0; i < names.Length; i++)
-			{
-				if (worker.ToLower() == names[i].ToLower())
-				{
-					Console.WriteLine(" Сотрудник - " + names[i] + " - " + profession[i]);
-					workerIsFind = true;
-				}
-			}
-			if (workerIsFind == false)
-			{
-				Console.WriteLine(" Нет такого сотрудника");
-			}
-		}
+         for (int i = 0; i < employee.Length; i++)
+         {
+            tempEmployee[i] = employee[i];
+         }
+         employee = tempEmployee;
 
-		static void RemoveProfession(ref string[] names, ref string[] profession)
-		{
-			WriteChar(names, profession);
-			Console.Write(" Введите фамилию работника для удоления: ");
-			string worker = Console.ReadLine();
-
-			string[] tempProfession = new string[profession.Length - 1];
-			string[] tempEmployee = new string[names.Length - 1];
-
-			for (int i = 0; i < names.Length; i++)
-			{
-				if (worker.ToLower() == names[i].ToLower())
-				{
-					Console.WriteLine(" Сотрудник - " + names[i] + " - удален");
-
-					for (int j = 0; j < i; j++)
-					{
-						tempEmployee[j] = names[j];
-						tempProfession[j] = profession[j];
-					}
-					for (int j = i + 1; j < names.Length; j++)
-					{
-						tempEmployee[j - 1] = names[j];
-						tempProfession[j - 1] = profession[j];
-					}
-					names = tempEmployee;
-					profession = tempProfession;
-				}
-			}
-		}
-
-		static string[] AddChar(string text, string[] employee)
-		{
-			string[] tempEmployee = new string[employee.Length + 1];
-			Console.Write(text);
-
-			for (int i = employee.Length; i < tempEmployee.Length; i++)
-			{
-				tempEmployee[i] = Console.ReadLine();
-			}
-
-			for (int i = 0; i < employee.Length; i++)
-			{
-				tempEmployee[i] = employee[i];
-			}
-			employee = tempEmployee;
-
-			return employee;
-		}
+         return employee;
+      }
