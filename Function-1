@@ -59,16 +59,16 @@
       static void PrintDossier(string[] names, string[] profession)
       {
          int numberOfChar = 0;
-         string allChar = "";
+         string allDossier = "";
 
          Console.Write(" Список всех сотрудников: ");
 
          for (int i = 0; i < names.Length; i++)
          {
-            allChar += ($"{++numberOfChar}: {names[i]} - {profession[i]}; ");
+            allDossier += ($"{++numberOfChar}: {names[i]} - {profession[i]}; ");
          }
 
-         Console.WriteLine(allChar);
+         Console.WriteLine(allDossier);
       }
 
       static void FindDossier(string[] names, string[] profession)
