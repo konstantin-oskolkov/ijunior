@@ -28,8 +28,8 @@
                   break;
 
                case "4":
-                  names = AddDossier("Username: ", names);
-                  profession = AddDossier("Profession: ", profession);
+                  names = AddDossier("Введите фамилию сотрудника: ", names);
+                  profession = AddDossier("Введите профессию сотрудника: ", profession);
                   break;
 
                case "5":
