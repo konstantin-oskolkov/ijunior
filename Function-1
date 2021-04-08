@@ -1,17 +1,15 @@
       static void Main(string[] args)
       {
-         string[] profession = new string[] { "Пупкин", "Ухов", "Блинков", "Сомова" };
-         string[] names = new string[] { "мойщик", "охрана", "секретарь", "дилектол" };
+         string[] names = new string[] { "Пупкин", "Ухов", "Блинков", "Сомова" };
+         string[] profession = new string[] { "мойщик", "охрана", "секретарь", "дилектол" };
 
-         WorkingWithDossier(names, profession);
-      }
+         int index = 0;
+         bool isEndWork = false;
+         bool flag = false;
 
-      static void WorkingWithDossier(string[] names, string[] profession)
-      {
-         bool endWorkWithUserMenu = true;
-         while (endWorkWithUserMenu)
+         while (!isEndWork)
          {
-            string selectedMenu = PrintUserMenu();
+            string selectedMenu = SelectUserMenu();
 
             switch (selectedMenu)
             {
@@ -20,20 +18,27 @@
                   break;
 
                case "2":
-                  FindDossier(names, profession);
+                  FindDossier(" Введите фамилию для поиска досье:", names, profession, ref flag, ref index);
                   break;
 
                case "3":
-                  RemoveDossier(ref names, ref profession);
+                  PrintDossier(names, profession);
+                  FindDossier(" Введите фамилию для удоления досье: ", names, profession, ref flag, ref index);
+                               
+                  if (flag && names.Length > 0)
+                  {
+                     names = RemoveDossier(names, index);
+                     profession = RemoveDossier(profession, index);
+                  }
                   break;
 
                case "4":
-                  names = AddDossier("Введите фамилию сотрудника: ", names);
-                  profession = AddDossier("Введите профессию сотрудника: ", profession);
+                  names = AddDossier(" Введите фамилию сотрудника: ", names);
+                  profession = AddDossier(" Введите профессию сотрудника: ", profession);
                   break;
 
                case "5":
-                  endWorkWithUserMenu = false;
+                  isEndWork = true;
                   break;
 
                default:
@@ -43,10 +48,10 @@
             Console.WriteLine(" для продолжения нажмите клавишу");
             Console.ReadKey();
             Console.Clear();
-         }
+         } 
       }
 
-      static string PrintUserMenu()
+      static string SelectUserMenu()
       {
          Console.WriteLine(" Работа с досье сотрудников:");
          Console.Write(" Выберите действие:\n 1 - Вывести список всех сотрудников" +
@@ -58,88 +63,76 @@
 
       static void PrintDossier(string[] names, string[] profession)
       {
-         int numberOfDossier = 0;
          string allDossier = "";
 
          Console.Write(" Список всех сотрудников: ");
 
          for (int i = 0; i < names.Length; i++)
          {
-            allDossier += ($"{++numberOfDossier}: {names[i]} - {profession[i]}; ");
+            allDossier += ($"{i+1}: {names[i]} - {profession[i]}; ");
          }
 
          Console.WriteLine(allDossier);
       }
 
-      static void FindDossier(string[] names, string[] profession)
+      static void FindDossier(string text, string[] names, string[] profession, ref bool flag, ref int index)
       {
          string worker;
          bool workerIsFind = false;
-
-         Console.Write(" Введите фамилию для поиска досье: ");
+         Console.Write(text);
          worker = Console.ReadLine();
 
          for (int i = 0; i < names.Length; i++)
          {
             if (worker.ToLower() == names[i].ToLower())
             {
-               Console.WriteLine(" Сотрудник - " + names[i] + " - " + profession[i]);
+               Console.WriteLine(" Найден сотрудник - " + names[i] + " - " + profession[i]);
                workerIsFind = true;
+               index = i;
+               flag= true;
             }
          }
+
          if (workerIsFind == false)
          {
             Console.WriteLine(" Нет такого сотрудника");
          }
       }
 
-      static void RemoveDossier(ref string[] names, ref string[] profession)
+      static string[] RemoveDossier(string[] employee,int index)
       {
-         PrintDossier(names, profession);
-         Console.Write(" Введите фамилию работника для удаления: ");
-         string worker = Console.ReadLine();
+         string[] tempEmployee = new string[employee.Length - 1];
 
-         string[] tempProfession = new string[profession.Length - 1];
-         string[] tempEmployee = new string[names.Length - 1];
-
-         for (int i = 0; i < names.Length; i++)
+         for (int i = 0; i < employee.Length; i++)
          {
-            if (worker.ToLower() == names[i].ToLower())
+            if (i < index)
             {
-
-               Console.WriteLine(" Сотрудник - " + names[i] + " - удален");
-
-               for (int j = 0; j < i; j++)
+               tempEmployee[i] = employee[i];
+            }
+            else
+            {
+               if (i < employee.Length - 1)
                {
-                  tempEmployee[j] = names[j];
-                  tempProfession[j] = profession[j];
+                  tempEmployee[i] = employee[i + 1];
                }
-               for (int j = i + 1; j < names.Length; j++)
-               {
-                  tempEmployee[j - 1] = names[j];
-                  tempProfession[j - 1] = profession[j];
-               }
-               names = tempEmployee;
-               profession = tempProfession;
             }
          }
+
+         employee = tempEmployee;
+         return employee;
       }
 
       static string[] AddDossier(string text, string[] employee)
       {
          string[] tempEmployee = new string[employee.Length + 1];
          Console.Write(text);
-
-         for (int i = employee.Length; i < tempEmployee.Length; i++)
-         {
-            tempEmployee[i] = Console.ReadLine();
-         }
+         string worker = Console.ReadLine();
 
          for (int i = 0; i < employee.Length; i++)
          {
             tempEmployee[i] = employee[i];
          }
+         tempEmployee[tempEmployee.Length - 1] = worker;         
          employee = tempEmployee;
-
          return employee;
       }
