@@ -3,11 +3,11 @@
          string[] names = new string[] { "Пупкин", "Ухов", "Блинков", "Сомова" };
          string[] profession = new string[] { "мойщик", "охрана", "секретарь", "дилектол" };
 
-         int index = 0;
+         int index;
          bool isEndWork = false;
-         bool flag = false;
+         bool workerIsFind = false;
 
-         while (!isEndWork)
+         while (isEndWork == false)
          {
             string selectedMenu = SelectUserMenu();
 
@@ -18,14 +18,15 @@
                   break;
 
                case "2":
-                  FindDossier(" Введите фамилию для поиска досье:", names, profession, ref flag, ref index);
+                  FindDossier(" Введите фамилию для поиска досье:", names, profession, out workerIsFind, out index);
                   break;
 
                case "3":
                   PrintDossier(names, profession);
-                  FindDossier(" Введите фамилию для удоления досье: ", names, profession, ref flag, ref index);
-                               
-                  if (flag && names.Length > 0)
+
+                  FindDossier(" Введите фамилию для удоления досье: ", names, profession, out workerIsFind, out index);
+
+                  if (workerIsFind && names.Length > 0)
                   {
                      names = RemoveDossier(names, index);
                      profession = RemoveDossier(profession, index);
@@ -75,28 +76,40 @@
          Console.WriteLine(allDossier);
       }
 
-      static void FindDossier(string text, string[] names, string[] profession, ref bool flag, ref int index)
+      static void FindDossier(string text, string[] names, string[] profession, out bool workerIsFind, out int index)
+      {
+         Console.Write(text);
+         workerIsFind = TryGetIndex(names, out index);
+        
+         if (workerIsFind == true)
+         {
+            Console.WriteLine(" Найден сотрудник - " + names[index] + " - " + profession[index]);
+         }
+         
+         if (workerIsFind == false)
+         {
+            Console.WriteLine(" Нет такого сотрудника");
+         }
+      }
+
+      static bool TryGetIndex(string[] names, out int index)
       {
          string worker;
+         index = 0;
          bool workerIsFind = false;
-         Console.Write(text);
+         
          worker = Console.ReadLine();
 
          for (int i = 0; i < names.Length; i++)
          {
             if (worker.ToLower() == names[i].ToLower())
             {
-               Console.WriteLine(" Найден сотрудник - " + names[i] + " - " + profession[i]);
-               workerIsFind = true;
                index = i;
-               flag= true;
+               workerIsFind = true;
             }
          }
-
-         if (workerIsFind == false)
-         {
-            Console.WriteLine(" Нет такого сотрудника");
-         }
+         
+         return workerIsFind;
       }
 
       static string[] RemoveDossier(string[] employee,int index)
@@ -125,6 +138,7 @@
       static string[] AddDossier(string text, string[] employee)
       {
          string[] tempEmployee = new string[employee.Length + 1];
+
          Console.Write(text);
          string worker = Console.ReadLine();
 
@@ -132,7 +146,8 @@
          {
             tempEmployee[i] = employee[i];
          }
-         tempEmployee[tempEmployee.Length - 1] = worker;         
+         tempEmployee[tempEmployee.Length - 1] = worker;
          employee = tempEmployee;
+
          return employee;
       }
