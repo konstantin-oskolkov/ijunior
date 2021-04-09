@@ -5,7 +5,6 @@
 
          int index;
          bool isEndWork = false;
-         bool workerIsFind = false;
 
          while (isEndWork == false)
          {
@@ -18,18 +17,31 @@
                   break;
 
                case "2":
-                  FindDossier(" Введите фамилию для поиска досье:", names, profession, out workerIsFind, out index);
+                  Console.Write(" Введите фамилию для поиска досье: ");
+                  
+                  if (TryGetIndex(names, out index))
+                  {
+                     Console.WriteLine(" Найден сотрудник - " + names[index] + " - " + profession[index]);
+                  }
+                  else
+                  {
+                     Console.WriteLine(" Нет такого сотрудника");
+                  }
                   break;
 
                case "3":
                   PrintDossier(names, profession);
-
-                  FindDossier(" Введите фамилию для удоления досье: ", names, profession, out workerIsFind, out index);
-
-                  if (workerIsFind && names.Length > 0)
+                  Console.Write(" Введите фамилию для удоления досье: ");
+                  
+                  if (TryGetIndex(names, out index) && names.Length > 0)
                   {
+                     Console.WriteLine(" Сотрудник - " + names[index] + " - " + profession[index] + "  УВОЛЕН");
                      names = RemoveDossier(names, index);
                      profession = RemoveDossier(profession, index);
+                  }
+                  else
+                  {
+                     Console.WriteLine(" Нет такого сотрудника");
                   }
                   break;
 
@@ -75,23 +87,7 @@
 
          Console.WriteLine(allDossier);
       }
-
-      static void FindDossier(string text, string[] names, string[] profession, out bool workerIsFind, out int index)
-      {
-         Console.Write(text);
-         workerIsFind = TryGetIndex(names, out index);
-        
-         if (workerIsFind == true)
-         {
-            Console.WriteLine(" Найден сотрудник - " + names[index] + " - " + profession[index]);
-         }
-         
-         if (workerIsFind == false)
-         {
-            Console.WriteLine(" Нет такого сотрудника");
-         }
-      }
-
+      
       static bool TryGetIndex(string[] names, out int index)
       {
          string worker;
