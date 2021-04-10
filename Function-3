@@ -1,0 +1,28 @@
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         ReadInteger();
+      }
+
+      static int ReadInteger()
+      {
+         string input;
+         int number = 0;
+         bool isNotNumber = true;
+
+         while (isNotNumber == true)
+         {
+            Console.Write("Введите целое число: ");
+            input = Console.ReadLine();
+            if (int.TryParse(input, out number))
+            {
+               Console.WriteLine($"Вы ввели число {number}");
+               isNotNumber = false;
+            }
+            else Console.WriteLine("Вы ввели некорректные данные, введите еще раз");
+         }
+
+         return number;
+      }
+   }
