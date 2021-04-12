@@ -9,20 +9,24 @@
       {
          string input;
          int number = 0;
-         bool isNotNumber = true;
+         bool isNumber = false;
 
-         while (isNotNumber == true)
+         while (isNumber == false)
          {
             Console.Write("Введите целое число: ");
             input = Console.ReadLine();
-            if (int.TryParse(input, out number))
+
+            isNumber = int.TryParse(input, out number);
+
+            if (isNumber)
             {
                Console.WriteLine($"Вы ввели число {number}");
-               isNotNumber = false;
             }
-            else Console.WriteLine("Вы ввели некорректные данные, введите еще раз");
+            else
+            {
+               Console.WriteLine("Вы ввели некорректные данные.");
+            }
          }
-
          return number;
       }
    }
