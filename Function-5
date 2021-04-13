@@ -4,7 +4,7 @@
       {
          int[] numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-         Shuffle(ref numbers);
+         Shuffle(numbers);
 
          foreach (int elements in numbers)
          {
@@ -12,17 +12,17 @@
          }
       }
 
-      static void Shuffle(ref int[] numbers)
+      static void Shuffle(int[] numbers)
       {
          Random random = new Random();
 
          for (int i = numbers.Length - 1; i >= 0; i--)
          {
             int randomIndex = random.Next(i );
-            int shuffleIndex = numbers[i];
+            int temp = numbers[i];
 
             numbers[i] = numbers[randomIndex];
-            numbers[randomIndex] = shuffleIndex;
+            numbers[randomIndex] = temp;
          }
       }
    }
