@@ -1,0 +1,200 @@
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         Console.CursorVisible = false;
+
+         int playerX, playerY;
+         int enemyX, enemyY;
+
+         int playerDX = 0, playerDY = 0;
+         int enemyDX = 0, enemyDY = 1;
+
+         int allDots = 0;
+         int collectDots = 0;
+
+         Random random = new Random();
+
+         bool isPlaying = true;
+         bool isAlive = true;
+
+         char[,] map = ReadMap("map", out playerX, out playerY,out enemyX, out enemyY, ref allDots);
+         
+         DrawMap(map);
+
+         while (isPlaying)
+         {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(2, 17);
+            Console.Write($"Собрано {collectDots}/{allDots}");
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            if (Console.KeyAvailable)
+            {
+               ConsoleKeyInfo key = Console.ReadKey(true);
+
+               ChangeDirection(key, ref playerDX, ref playerDY);
+            }
+
+            if (map[playerX + playerDX, playerY + playerDY] != '#')
+            {
+               CollectDots(map, ref playerX, ref playerY, ref collectDots);
+
+               Move(map, '@', ref playerX, ref playerY, playerDX, playerDY, ConsoleColor.Yellow);
+            }
+
+            if (map[enemyX + enemyDX, enemyY + enemyDY] != '#')
+            {
+               Move(map,'G', ref enemyX, ref enemyY, enemyDX, enemyDY);
+            }
+            else
+            {
+               ChangeDirection(random, ref enemyDX, ref enemyDY);
+            }
+
+            if (playerX == enemyX && playerY == enemyY)
+            {
+               isAlive = false;
+            }
+            if(collectDots == allDots || !isAlive)
+            {
+               isPlaying = false;
+            }
+
+            System.Threading.Thread.Sleep(200);
+         }
+
+         Console.SetCursorPosition(2, 19);
+
+         if (collectDots == allDots)
+         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Вы ВЫИГРАЛИ :)");
+         }
+         else if(!isAlive)
+         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Вы ПРОИГРАЛИ :(");
+         }
+         Console.ForegroundColor = ConsoleColor.White;
+      }
+
+      static void CollectDots(char[,] map, ref int playerX, ref int playerY, ref int collectDots)
+      {
+         if (map[playerX, playerY] == '.')
+         {
+            collectDots++;
+            map[playerX, playerY] = ' ';
+         }
+      }
+
+      static void ChangeDirection(ConsoleKeyInfo key, ref int dX, ref int dY)
+      {
+         switch (key.Key)
+         {
+            case ConsoleKey.UpArrow:
+               dX = -1; dY = 0;
+               break;
+            case ConsoleKey.DownArrow:
+               dX = 1; dY = 0;
+               break;
+            case ConsoleKey.LeftArrow:
+               dX = 0; dY = -1;
+               break;
+            case ConsoleKey.RightArrow:
+               dX = 0; dY = 1;
+               break;
+         }
+      }
+
+      static void ChangeDirection(Random random, ref int dX, ref int dY)
+      {
+         int enemyMove = random.Next(1, 5);
+         switch (enemyMove)
+         {
+            case 1:
+               dX = -1; dY = 0;
+               break;
+            case 2:
+               dX = 1; dY = 0;
+               break;
+            case 3:
+               dX = 0; dY = -1;
+               break;
+            case 4:
+               dX = 0; dY = 1;
+               break;
+         }
+      }
+
+      static void Move(char [,] map, char symbol, ref int x, ref int y, int dX, int dY, ConsoleColor color = ConsoleColor.Red)
+      {
+         Console.SetCursorPosition(y, x);
+         Console.Write(map[x,y]);
+
+         x += dX;
+         y += dY;
+
+         Console.SetCursorPosition(y, x);
+         Console.ForegroundColor = color;
+         Console.Write(symbol);
+         Console.ForegroundColor = ConsoleColor.Green;
+      }
+
+      static char[,] ReadMap(string mapName, out int playerX, out int playerY, out int enemyX, out int enemyY, ref int allDots)
+      {
+         playerX = 0;
+         playerY = 0;
+         enemyX = 0;
+         enemyY = 0;
+
+         string[] newFile = File.ReadAllLines($"Maps/{mapName}.txt");
+         char[,] map = new char[newFile.Length, newFile[0].Length];
+
+         for(int i = 0; i < map.GetLength(0); i++)
+         {
+            for(int j= 0; j < map.GetLength(1); j++)
+            {
+               map[i, j] = newFile[i][j];
+               if(map[i, j] == '$')
+               {
+                  playerX = i;
+                  playerY = j;
+                  map[i, j] = ' ';
+               }
+               if (map[i, j] == 'N')
+               {
+                  enemyX = i;
+                  enemyY = j;
+                  map[i, j] = ' ';
+               }
+               else if(map[i, j] == '.')
+               {
+                  allDots++;
+               }
+            }
+         }
+         return map;
+      }
+
+      static void DrawMap(char[,] map)
+      {
+         for (int i = 0; i < map.GetLength(0); i++)
+         {
+            for (int j = 0; j < map.GetLength(1); j++)
+            {
+               if (map[i, j] == '.')
+               {
+                  Console.ForegroundColor = ConsoleColor.Green;
+                  Console.Write(map[i, j]);
+               }
+               else
+               {
+                  Console.ForegroundColor = ConsoleColor.DarkGray;
+                  Console.Write(map[i, j]);
+               }
+            }
+            Console.WriteLine();
+         }
+      }
+   }
