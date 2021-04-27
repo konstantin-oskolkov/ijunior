@@ -1,0 +1,55 @@
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         bool isWork = true;
+
+         Dictionary<string, string> words = new Dictionary<string, string>();
+
+         words.Add("рыба", "плавает в воде.");
+         words.Add("ягода", "бывает опасной.");
+         words.Add("скотч", "смотря что вам нужно: клейкая лента или крепкий алкоголь.");
+         words.Add("свинец", "плюмбум.");
+
+         while (isWork)
+         {
+            Console.WriteLine("1 - Узнать значение слов в словаре. ");
+            Console.WriteLine("2 - Выход. ");
+
+            Console.Write("\nВведите номер команда: ");
+            string caseSwitch = Console.ReadLine();
+
+            switch (caseSwitch)
+            {
+               case "1":
+                  Console.WriteLine("\nСписок слов в словаре: ");
+                  foreach (var item in words)
+                  {
+                     Console.WriteLine(item.Key);
+                  }
+
+                  Console.Write("\nВведите слово, значение которого хотите узнать: ");
+                  string word = Console.ReadLine();
+
+                  if (words.ContainsKey(word))
+                  {
+                     Console.WriteLine($"значение слова { word} - { words[word]}");
+                  }
+                  else
+                  {
+                     Console.WriteLine("Нет такого слова в словаре.");
+                  }
+                  break;
+               case "2":
+                  isWork = false;
+                  Console.WriteLine("нажмите любую клавишу.");
+                  break;
+               default:
+                  Console.WriteLine("Нет такой команды.");
+                  break;
+            }
+            Console.ReadKey();
+            Console.Clear();
+         }
+      }
+   }
