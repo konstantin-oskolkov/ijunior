@@ -1,0 +1,116 @@
+      static void Main(string[] args)
+      {
+         List<int> numbers = new List<int>();
+         int[] arr;
+         arr = new int[0];
+         bool isWork = true;
+         int summ = 0;
+
+         while (isWork)
+         {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine("\n данные по массиву ");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Write("размер массива: ");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(numbers.Count);
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("элементы массива: ");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+
+            foreach (int number in numbers) // Write
+            {
+               Console.Write(number + " | ");
+            }
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\n\n(1) - задать массив чисел\n(2) - добавить число\n(3) - Удолить число\n" +
+                              "(4) - вывод суммы чисел\n(exit) - выход\n");
+
+            Console.Write("введите команду: ");
+            string select = Console.ReadLine();
+
+            switch (select)
+            {
+               case "1":
+                  AddMassive(out arr);
+                  numbers.Clear();
+                  numbers.AddRange(arr);
+                  break;
+
+               case "2":
+                  Console.Write("Введите целое число чтобы добавить в массив: ");
+                  numbers.Add(ReadInteger());
+                  break;
+
+               case "3":
+                  Console.Write("Введите число которое следует удолить: ");
+                  bool isDelete = numbers.Remove(ReadInteger());
+
+                  if (!isDelete)
+                  {
+                     Console.WriteLine("нет такогочисла в списке");
+                     Console.ReadKey();
+                  }
+                  break;
+
+               case "4":
+                  foreach (int item in numbers)
+                  {
+                     summ += item;
+                  }
+                  Console.ForegroundColor = ConsoleColor.Yellow;
+                  Console.WriteLine("\nсумма чисел: " + summ);
+                  Console.ForegroundColor = ConsoleColor.White;
+                  Console.ReadKey();
+                  break;
+
+               case "exit":
+                  isWork = false;
+                  break;
+
+               default:
+                  Console.WriteLine("!!! не верная команда !!!");
+                  Console.ReadKey();
+                  break;
+            }
+         }
+      }
+
+      static int[] AddMassive(out int[] arr)
+      {
+         Console.Write("Введите количество элементов: ");
+         arr = new int[ReadInteger()];
+
+         for (int i = 0; i < arr.Length; i++)
+         {
+            Console.Write($"введите {i+1} число: ");;
+            arr[i] = ReadInteger();
+         }
+         return arr;
+      }
+
+      static int ReadInteger()
+      {
+         string input;
+         int number = 0;
+         bool isNumber = false;
+
+         while (isNumber == false)
+         {
+            input = Console.ReadLine();
+            isNumber = int.TryParse(input, out number);
+
+            if (!isNumber)
+            {
+               Console.WriteLine("Вы ввели некорректные данные.");
+               Console.Write("Введите целое число: ");
+            }
+         }
+         return number;
+      }
