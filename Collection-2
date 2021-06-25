@@ -29,7 +29,7 @@
             }
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\n\n(1) - задать массив чисел\n(2) - добавить число\n(3) - Удолить число\n" +
+            Console.WriteLine("\n\n(1) - задать массив чисел\n(2) - добавить число\n(3) - удалить число\n" +
                               "(4) - вывод суммы чисел\n(exit) - выход\n");
 
             Console.Write("введите команду: ");
