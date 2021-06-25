@@ -75,7 +75,7 @@
                   break;
 
                default:
-                  Console.WriteLine("!!! не верная команда !!!");
+                  Console.WriteLine("!!! неверная команда !!!");
                   Console.ReadKey();
                   break;
             }
