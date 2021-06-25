@@ -23,7 +23,7 @@
             Console.Write("элементы массива: ");
             Console.ForegroundColor = ConsoleColor.Yellow;
 
-            foreach (int number in numbers) // Write
+            foreach (int number in numbers)
             {
                Console.Write(number + " | ");
             }
@@ -44,17 +44,17 @@
                   break;
 
                case "2":
-                  Console.Write("Введите целое число чтобы добавить в массив: ");
+                  Console.Write("Введите целое число, чтобы добавить в массив: ");
                   numbers.Add(ReadInteger());
                   break;
 
                case "3":
-                  Console.Write("Введите число которое следует удолить: ");
+                  Console.Write("Введите число, которое следует удалить: ");
                   bool isDelete = numbers.Remove(ReadInteger());
 
                   if (!isDelete)
                   {
-                     Console.WriteLine("нет такогочисла в списке");
+                     Console.WriteLine("нет такого числа в списке");
                      Console.ReadKey();
                   }
                   break;
