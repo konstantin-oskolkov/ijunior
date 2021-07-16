@@ -1,10 +1,8 @@
       static void Main(string[] args)
       {
          List<int> numbers = new List<int>();
-         int[] arr;
-         arr = new int[0];
+         int[] tempMassive;
          bool isWork = true;
-         int summ = 0;
 
          while (isWork)
          {
@@ -34,13 +32,12 @@
 
             Console.Write("введите команду: ");
             string select = Console.ReadLine();
-
+            
             switch (select)
             {
                case "1":
-                  AddMassive(out arr);
                   numbers.Clear();
-                  numbers.AddRange(arr);
+                  numbers.AddRange(AddMassive(out tempMassive));
                   break;
 
                case "2":
@@ -60,13 +57,7 @@
                   break;
 
                case "4":
-                  foreach (int item in numbers)
-                  {
-                     summ += item;
-                  }
-                  Console.ForegroundColor = ConsoleColor.Yellow;
-                  Console.WriteLine("\nсумма чисел: " + summ);
-                  Console.ForegroundColor = ConsoleColor.White;
+                  CalculationSumm(numbers);
                   Console.ReadKey();
                   break;
 
@@ -82,17 +73,17 @@
          }
       }
 
-      static int[] AddMassive(out int[] arr)
+      static int[] AddMassive(out int[] tempMassive)
       {
          Console.Write("Введите количество элементов: ");
-         arr = new int[ReadInteger()];
+         tempMassive = new int[ReadInteger()];
 
-         for (int i = 0; i < arr.Length; i++)
+         for (int i = 0; i < tempMassive.Length; i++)
          {
             Console.Write($"введите {i+1} число: ");;
-            arr[i] = ReadInteger();
+            tempMassive[i] = ReadInteger();
          }
-         return arr;
+         return tempMassive;
       }
 
       static int ReadInteger()
@@ -113,4 +104,18 @@
             }
          }
          return number;
+      }
+
+      static List<int> CalculationSumm(List<int> numbers)
+      {
+         int summ = 0;
+         foreach (int item in numbers)
+         {
+            summ += item;
+         }
+
+         Console.ForegroundColor = ConsoleColor.Yellow;
+         Console.WriteLine("\nсумма чисел: " + summ);
+         Console.ForegroundColor = ConsoleColor.White;
+         return numbers;
       }
