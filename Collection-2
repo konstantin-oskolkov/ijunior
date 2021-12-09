@@ -1,7 +1,8 @@
+class Program
+   {
       static void Main(string[] args)
       {
          List<int> numbers = new List<int>();
-         int[] tempMassive;
          bool isWork = true;
 
          while (isWork)
@@ -27,8 +28,7 @@
             }
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\n\n(1) - задать массив чисел\n(2) - добавить число\n(3) - удалить число\n" +
-                              "(4) - вывод суммы чисел\n(exit) - выход\n");
+            Console.WriteLine("\n\n(1) - Введите целое число, чтобы добавить в массив\n(2) - вывод суммы чисел\n(3) - очистить массив\n(exit) - выход\n");
 
             Console.Write("введите команду: ");
             string select = Console.ReadLine();
@@ -36,29 +36,17 @@
             switch (select)
             {
                case "1":
-                  numbers.Clear();
-                  numbers.AddRange(AddMassive(out tempMassive));
-                  break;
-
-               case "2":
                   Console.Write("Введите целое число, чтобы добавить в массив: ");
                   numbers.Add(ReadInteger());
                   break;
 
-               case "3":
-                  Console.Write("Введите число, которое следует удалить: ");
-                  bool isDelete = numbers.Remove(ReadInteger());
-
-                  if (!isDelete)
-                  {
-                     Console.WriteLine("нет такого числа в списке");
-                     Console.ReadKey();
-                  }
+               case "2":
+                  СomputeSumm(numbers);
+                  Console.ReadKey();
                   break;
 
-               case "4":
-                  CalculationSumm(numbers);
-                  Console.ReadKey();
+               case "3":
+                  numbers.Clear();
                   break;
 
                case "exit":
@@ -73,40 +61,19 @@
          }
       }
 
-      static int[] AddMassive(out int[] tempMassive)
-      {
-         Console.Write("Введите количество элементов: ");
-         tempMassive = new int[ReadInteger()];
-
-         for (int i = 0; i < tempMassive.Length; i++)
-         {
-            Console.Write($"введите {i+1} число: ");;
-            tempMassive[i] = ReadInteger();
-         }
-         return tempMassive;
-      }
-
       static int ReadInteger()
       {
-         string input;
-         int number = 0;
-         bool isNumber = false;
+         int number;
 
-         while (isNumber == false)
+         while (!int.TryParse(Console.ReadLine(), out number))
          {
-            input = Console.ReadLine();
-            isNumber = int.TryParse(input, out number);
-
-            if (!isNumber)
-            {
-               Console.WriteLine("Вы ввели некорректные данные.");
-               Console.Write("Введите целое число: ");
-            }
+            Console.WriteLine("Вы ввели некорректные данные.");
+            Console.Write("Введите целое число: ");
          }
          return number;
       }
 
-      static List<int> CalculationSumm(List<int> numbers)
+      static List<int> СomputeSumm(List<int> numbers)
       {
          int summ = 0;
          foreach (int item in numbers)
@@ -119,3 +86,5 @@
          Console.ForegroundColor = ConsoleColor.White;
          return numbers;
       }
+   }
+}
