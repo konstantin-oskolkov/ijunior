@@ -1,1 +1,34 @@
+namespace Ckass
+{
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         int revenue = 0;
 
+         Queue<int> clients = new Queue<int>();
+
+         Random random = new Random();
+         int visitor = random.Next(4, 20);
+
+         SetClient(clients, visitor);
+
+         while (clients.Count > 0)
+         {
+            int payment = random.Next(10, 2000);
+            revenue += payment;
+            Console.WriteLine($"Покупатель {clients.Dequeue() + 1} купил на сумму {payment} р. выручка = {revenue} р.");
+         }
+         Console.WriteLine($"\nПоситителей больше нету. \n дневная выручка {revenue}\n");
+      }
+
+      static Queue<int> SetClient(Queue<int> clients, int visitor)
+      {
+         for (int i = 0; i < visitor; i++)
+         {
+            clients.Enqueue(i);
+         }
+         return clients;
+      }
+   }
+}
