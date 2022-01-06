@@ -1,0 +1,138 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         List<string> surName = new List<string>();
+         List<string> profession = new List<string>();
+
+         bool isProcess = true;
+         bool haveDosier;
+         int remove;
+
+         while (isProcess)
+         {
+            Console.Clear();
+            Console.SetCursorPosition(1, 1);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("      Меню:      ");
+            Console.ResetColor();
+            Console.WriteLine(" 1-Добавить досье\n 2-Вывести все досье\n 3-Удалить досье\n 4-Выход");
+            Console.Write("\n Введите команду - ");
+            int number = ReadInteger();
+            Console.WriteLine();
+
+            switch (number)
+            {
+               case 1:
+                  AddDosier(surName, profession, out haveDosier);
+                  break;
+
+               case 2:
+               case 3:
+                  OutputDosier(surName, profession, out haveDosier);
+
+                  if (number == 3)
+                  {
+                     Console.WriteLine("\n");
+                     if (haveDosier)
+                     {
+                        DeliteDosier(surName, profession, out remove);
+                     }
+                  }
+                  Console.ReadKey();
+                  break;
+
+               case 4:
+                  isProcess = false;
+                  break;
+
+               default:
+                  Console.BackgroundColor = ConsoleColor.White;
+                  Console.ForegroundColor = ConsoleColor.Red;
+                  Console.WriteLine(" НЕ ВЕРНАЯ КОМАНДА!");
+                  Console.ResetColor();
+                  Console.ReadKey();
+                  break;
+            }
+         }
+      }
+
+      static void AddDosier(List<string> surName, List<string> profession, out bool haveDosier)
+      {
+         haveDosier = true;
+         bool writeData = true;
+
+         while (writeData)
+         {
+            Console.Clear();
+            Console.SetCursorPosition(1, 1);
+            OutputDosier(surName, profession, out haveDosier);
+
+            Console.Write("\n Введите фамилию - ");
+            surName.Add(Console.ReadLine());
+
+            Console.Write(" Введите должность - ");
+            profession.Add(Console.ReadLine());
+
+            Console.Write("\n Для продолжения нажмите любую клавишу\n или для выхода в меню введите - exit - ");
+            string exit = Console.ReadLine().ToLower();
+
+            if (exit == "exit")
+            {
+               writeData = false;
+            }
+         }
+      }
+
+      static void DeliteDosier(List<string> surName, List<string> profession, out int data)
+      {
+         Console.Write(" Введите номер досье для удаления: ");
+         data = ReadInteger();
+
+         if (data <= 0 | surName.Count < data)
+         {
+            Console.Write("\n нет такого досье");
+         }
+         else
+         {
+            Console.Write($"\n досье: {surName[data - 1]} - удалено");
+            surName.RemoveAt(data - 1);
+            profession.RemoveAt(data - 1);
+         }
+      }
+
+      static void OutputDosier(List<string> surName, List<string> profession, out bool haveDosier)
+      {
+         if (surName.Count > 0)
+         {
+            Console.Write(" Досье: ");
+            for (int i = 0; i < surName.Count; i++)
+            {
+               Console.Write($" {i + 1}: {surName[i]} должность - {profession[i]} | ");
+            }
+            haveDosier = true;
+         }
+         else
+         {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(" В базе нет досье.");
+            Console.ResetColor();
+            haveDosier = false;
+         }
+      }
+
+      static int ReadInteger()
+      {
+         int number;
+
+         while (!int.TryParse(Console.ReadLine(), out number))
+         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" Вы ввели некорректные данные. Введите число: ");
+            Console.ResetColor();
+         }
+         return number;
+      }
+   }
