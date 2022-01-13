@@ -1,54 +1,54 @@
-class Program
+  class Program
    {
       private static void Main(string[] args)
       {
          Player player1 = new Player(9, 4);
          Renderer renderer = new Renderer();
-         renderer.DrawPlayer(player1.X, player1.Y);         
+         renderer.DrawPlayer(player1.PozitionX, player1.PozitionY);         
       }
    }
 
    class Player
    {
-      private int _x;
-      private int _y;
+      private int _pozitionX;
+      private int _pozitionY;
 
-      public int X
+      public int PozitionX
       {
          get 
          {
-            return _x; 
+            return _pozitionX; 
          }
          private set 
          {
-            _x = value; 
+            _pozitionX = value; 
          }
       }
 
-      public int Y
+      public int PozitionY
       {
          get
          {
-            return _y;
+            return _pozitionY;
          }
          private set
          {
-            _y = value;
+            _pozitionY = value;
          }
       }
 
-      public Player(int x, int y)
+      public Player(int takePozitionX, int takePozitionY)
       {
-         X = x;
-         Y = y;
+         PozitionX = takePozitionX;
+         PozitionY = takePozitionY;
       }
    }
 
    class Renderer
    {
-      public void DrawPlayer(int x, int y, char symbol = '@')
+      public void DrawPlayer(int pozitionX, int pozitionY, char symbol = '@')
       {
-         Console.SetCursorPosition(x, y);
+         Console.SetCursorPosition(pozitionX, pozitionY);
          Console.WriteLine(symbol);
       }
    }
