@@ -1,0 +1,29 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         var player1 = new Player("Evgeniy", 35, "man");
+
+         player1.ShowInfo();
+      }
+   }
+
+   class Player
+   {
+      private string _name;
+      private int _age;
+      private string _gender;
+
+      public Player(string name, int age, string gender)
+      {
+         _name = name;
+         _age = age;
+         _gender = gender;
+      }
+
+      public void ShowInfo()
+      {
+         Console.WriteLine("Имя игрока - " + _name + "\nвозраст - " + _age + "\nпол - " + _gender);
+      }
+
+   }
