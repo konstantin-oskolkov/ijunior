@@ -1,0 +1,206 @@
+{
+   class Program
+   {
+      private static void Main(string[] args)
+      {
+         Menu.WorkGuild();
+      }
+   }
+
+   class Menu
+   {
+      public static void WorkGuild()
+      {
+         bool isRunning = true;
+         Guild guild = new Guild();
+         while (isRunning)
+         {
+            Console.Clear();
+            Console.WriteLine("Выберите действие. \n1 - добавить бойца. \n2 - удалить бойца. \n3 - изменить статус бана бойца. \n4 - вывести базу бойцов на экран. \n5 - Выход.");
+            Console.Write("\nВведите команду: ");
+            string input = Console.ReadLine();
+            switch (input)
+            {
+               case "1":
+                  guild.AddPlayer();
+                  break;
+
+               case "2":
+                  guild.ShowPlayers();
+
+                  Console.Write("\nВведите номер бойца, которого хотели бы удалить из базы: ");
+                  int delitePlayerId = ReadInteger();
+
+                  if(guild.DeletePlayer(delitePlayerId))
+                  {
+                     Console.Write($"Боец удален из базы");
+                  }
+                  else
+                  {
+                     Console.Write($"Нет такого бойца");
+                  }
+                  Console.ReadKey();
+                  break;
+
+               case "3":
+                  guild.ShowPlayers();
+                  Console.WriteLine();
+                  Console.Write($"Введите номер бойца, которому нужно изменить статус бана: ");
+                  int idPlayer = ReadInteger();
+                  guild.SetPlayerBan(idPlayer);
+                  break;
+
+               case "4":
+                  guild.ShowPlayers();
+                  Console.ReadKey();
+                  break;
+
+               case "5":
+                  isRunning = false;
+                  break;
+
+               default:
+                  Console.Write("\nВы ввели некорректные данные. Введите число: от 1 до 5");
+                  Console.ReadKey();
+                  break;
+            }
+         }
+      }
+
+      static public int ReadInteger()
+      {
+         int number;
+
+         while (!int.TryParse(Console.ReadLine(), out number))
+         {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" Вы ввели некорректные данные. Введите число: ");
+            Console.ResetColor();
+         }
+         return number;
+      }
+   }
+
+   class Guild
+   {
+      private List<Warrior> _warrior = new List<Warrior>();
+
+      public void AddPlayer()
+      {
+         Console.Write("Введите ник бойца: ");
+         string nickname = Console.ReadLine();
+
+         if (NameCheck(nickname))
+         {
+            Console.Write("Введите уровень бойца: ");
+            int level = Menu.ReadInteger();
+
+            Warrior player = new Warrior(level, nickname);
+
+            _warrior.Add(player);
+         }
+         else
+         {
+            Console.WriteLine("Такое имя уже есть.");
+            Console.ReadKey();
+         }
+      }
+
+      public bool DeletePlayer(int delitePlayerId)
+      {
+         Warrior player = FindById(delitePlayerId);
+
+         if (player == null)
+         {
+            return false;
+         }
+         else
+         {
+            _warrior.Remove(player);
+            return true;
+         }
+      }
+
+      public bool NameCheck(string nickname)
+      {
+         foreach (var player in _warrior)
+         {
+            if (player.Nickname.ToLower() == nickname.ToLower())
+            {
+               return false;
+            }
+         }
+         return true;
+      }
+
+      public void SetPlayerBan(int idPlayer)
+      {
+         Warrior player = FindById(idPlayer);
+         if (player == null)
+         {
+            Console.Write("Вы ввели некорректные данные.");
+            Console.ReadKey();
+         }
+         else
+         {
+            if (player.IsBanned)
+            {
+               player.SetBan(false);
+            }
+            else
+            {
+               player.SetBan(true);
+            }
+         }
+      }
+
+      public void ShowPlayers()
+      {
+         int idPlayer = 1;
+         foreach (var player in _warrior)
+         {
+            Console.WriteLine($" №: {idPlayer}. " + player.ShowInfo());
+            idPlayer++;
+         }
+      }
+
+      public Warrior FindById(int idPlayer)
+      {
+         int i = 1;
+         foreach (var player in _warrior)
+         {
+            if (i == idPlayer)
+            {
+               return player;
+            }
+            i++;
+         }
+         return null;
+      }
+   }
+
+   class Warrior
+   {
+      public int Level { get; private set; }
+      public string Nickname { get; private set; }
+      public bool IsBanned { get; private set; }
+
+      public Warrior(int level, string nickname, bool isBanned = false)
+      {
+         Level = level;
+         Nickname = nickname;
+         IsBanned = isBanned;
+      }
+
+      public bool SetBan(bool ban)
+      {
+         IsBanned = ban;
+         return ban;
+      }
+
+      public string ShowInfo()
+      {
+         return $" Боец: {Nickname}. Уровень: {Level}. Статус бана: " + (IsBanned ? " забанен" : "бана нет");
+      }
+   }
+}
