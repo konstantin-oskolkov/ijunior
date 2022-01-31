@@ -1,21 +1,21 @@
 {
- class Program
+   class Program
    {
-      private static void Main(string[] args)
+      static void Main(string[] args)
       {
          bool isRunning = true;
          Guild guild = new Guild();
          while (isRunning)
          {
             Console.Clear();
-            Console.WriteLine("Выберите действие. \n1 - добавить бойца. \n2 - удалить бойца. \n3 - изменить статус бана бойца. \n4 - вывести базу бойцов на экран. \n5 - Выход.");
+            Console.WriteLine("Выберите действие. \n1 - добавить бойца. \n2 - удалить бойца. \n3 - вывести базу бойцов на экран. \n4 - ЗАБАНИТЬ бойца. \n5 - снять бан с бойца \n6 - Выход.");
             Console.Write("\nВведите команду: ");
             string input = Console.ReadLine();
             Console.WriteLine();
             switch (input)
             {
                case "1":
-                  guild.AddWarrior();
+                  guild.CreateWarrior();
                   break;
 
                case "2":
@@ -23,15 +23,19 @@
                   break;
 
                case "3":
-                  guild.SetWarriorBan();
-                  break;
-
-               case "4":
                   guild.ShowWarriors();
                   Console.ReadKey();
                   break;
 
+               case "4":
+                  guild.BanWarrior();
+                  break;
+                  
                case "5":
+                  guild.UnBanWarrior();
+                  break;
+                  
+               case "6":
                   isRunning = false;
                   break;
 
@@ -48,75 +52,67 @@
    {
       private List<Warrior> _warriors = new List<Warrior>();
 
-      public void AddWarrior()
+      public void CreateWarrior()
       {
          Console.Write("Введите ник бойца: ");
-         string nickname = Console.ReadLine();
+         string newName = Console.ReadLine();
+         var tempWarrior = _warriors.Find(warrior => warrior.Nickname == newName);
 
-         if (CheckName(nickname))
-         {
-            Console.Write("Введите уровень бойца: ");
-            int level = ReadInteger();
-
-            Warrior warrior = new Warrior(level, nickname);
-
-            _warriors.Add(warrior);
-         }
-         else
+         if (tempWarrior != null)
          {
             Console.WriteLine("Такое имя уже есть.");
             Console.ReadKey();
          }
-      }
-
-      public bool DeleteWarrior()
-      {
-         ShowWarriors();
-
-         Console.Write("\nВведите номер бойца, которого хотели бы удалить из базы: ");
-         Warrior warrior = FindById(ReadInteger());
-
-         if (warrior == null)
-         {
-            Console.Write($"Нет такого бойца");
-            Console.ReadKey();
-            return false;
-         }
          else
          {
-            Console.Write($"Боец удален из базы");
-            _warriors.Remove(warrior);
-            Console.ReadKey();
-            return true;
+            Console.Write("Введите уровень бойца: ");
+            int level = ReadInteger();
+            _warriors.Add(new Warrior(level, newName));
          }
       }
 
-      public void SetWarriorBan()
+      public void DeleteWarrior()
       {
          ShowWarriors();
-
-         Console.Write($"\nВведите номер бойца, которому нужно изменить статус бана: ");
-         Warrior warrior = FindById(ReadInteger());
-
-         if (warrior == null)
+         if (_warriors.Count >0)
          {
-            Console.Write("Вы ввели некорректные данные.");
-            Console.ReadKey();
+            Console.Write("\nВведите номер бойца, которого хотели бы удалить из базы: ");
+            int fibdId = ReadInteger();
+            _warriors.Remove(_warriors.Find(warrior => warrior.Id == fibdId));
          }
          else
          {
-            if (warrior.Banned)
-            {
-               warrior.UnbanWarrior();
-               Console.Write($"Боец: {warrior.Nickname} бан снят.");
-               Console.ReadKey();
-            }
-            else
-            {
-               warrior.BanWarrior();
-               Console.Write($"Боец: {warrior.Nickname} забанен.");
-               Console.ReadKey();
-            }
+            Console.ReadKey();
+         }
+      }
+
+      public void BanWarrior()
+      {
+         ShowWarriors();
+
+         Console.Write($"\nВведите номер бойца, которого нужно забанить: ");
+         int findId = ReadInteger();
+
+         var setBan = _warriors.Find(warrior => warrior.Id == findId);
+
+         if (setBan != null)
+         {
+            setBan.Ban();
+         }
+      }
+
+      public void UnBanWarrior()
+      {
+         ShowWarriors();
+
+         Console.Write($"\nВведите номер бойца, которого нужно разбанить: ");
+         int findId = ReadInteger();
+
+         var removeBan = _warriors.Find(warrior => warrior.Id == findId);
+
+         if (removeBan != null)
+         {
+            removeBan.UnBan();
          }
       }
 
@@ -124,44 +120,12 @@
       {
          if (_warriors.Count > 0)
          {
-            int idWarrior = 1;
-            foreach (var warrior in _warriors)
-            {
-               Console.WriteLine($" №: {idWarrior}. " + warrior.ShowInfo());
-               idWarrior++;
-            }
+            _warriors.ForEach(warrior => Console.WriteLine(warrior.ShowInfo()));
          }
          else
          {
             Console.Write("Гильдия пока пуста.");
-            Console.ReadKey();
          }
-      }
-
-      private Warrior FindById(int idWarrior)
-      {
-         int count = 1;
-         foreach (var warrior in _warriors)
-         {
-            if (count == idWarrior)
-            {
-               return warrior;
-            }
-            count++;
-         }
-         return null;
-      }
-
-      private bool CheckName(string nickname)
-      {
-         foreach (var warrior in _warriors)
-         {
-            if (warrior.Nickname.ToLower() == nickname.ToLower())
-            {
-               return false;
-            }
-         }
-         return true;
       }
 
       private int ReadInteger()
@@ -180,6 +144,7 @@
 
    class Warrior
    {
+      private static int count = 1;
       public int Id { get; set; }
       public int Level { get; private set; }
       public string Nickname { get; private set; }
@@ -187,24 +152,26 @@
 
       public Warrior(int level, string nickname, bool banned = false)
       {
+         Id = count++;
          Level = level;
          Nickname = nickname;
          Banned = banned;
+
       }
 
-      public void BanWarrior()
+      public void Ban()
       {
          Banned = true;
       }
 
-      public void UnbanWarrior()
+      public void UnBan()
       {
          Banned = false;
       }
 
       public string ShowInfo()
       {
-         return $" Боец: {Nickname}. Уровень: {Level}. Статус бана: " + (Banned ? " забанен" : "бана нет");
+         return $"№{Id} Боец: {Nickname}. Уровень: {Level}. Статус бана: " + (Banned ? " забанен" : "бана нет");
       }
    }
 }
