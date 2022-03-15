@@ -1,16 +1,17 @@
 static void Main(string[] args)
       {
-         int sum = 0;
+         int sum = 0, min = 1, max = 101,
+             ndivisorA = 3, divisorB = 5;
 
-         Random rand = new Random();
-         int number = rand.Next(1, 101);
+         Random random = new Random();
+         int number = random.Next(min, max);
 
          Console.WriteLine($"Рандомное число: {number}");
-         Console.Write($"числа кратные 3 или 5: ");
+         Console.Write($"числа кратные {ndivisorA} или {divisorB}: ");
 
          for (int i = 1; i <= number; i++)
          {
-            if (i % 3 == 0 || i % 5 == 0)
+            if (i % ndivisorA == 0 || i % divisorB == 0)
             {
                sum += i;
                Console.Write(i + "|");
