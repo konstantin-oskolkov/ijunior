@@ -1,0 +1,20 @@
+static void Main(string[] args)
+      {
+         int sum = 0;
+
+         Random rand = new Random();
+         int number = rand.Next(1, 101);
+
+         Console.WriteLine($"Рандомное число: {number}");
+         Console.Write($"числа кратные 3 или 5: ");
+
+         for (int i = 1; i <= number; i++)
+         {
+            if (i % 3 == 0 || i % 5 == 0)
+            {
+               sum += i;
+               Console.Write(i + "|");
+            }
+         }
+         Console.WriteLine("\nСумма полученных чисел (включая рандомное число): "+(sum+number));
+      }
