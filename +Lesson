@@ -1,0 +1,11 @@
+static void Main(string[] args)
+      {
+         string firstName = "Орлов";
+         string secondName = "Василий";
+
+         Console.WriteLine(firstName + "|" +secondName);
+
+         (secondName, firstName) = (firstName, secondName);
+
+         Console.WriteLine(firstName + "|" + secondName);
+      }
