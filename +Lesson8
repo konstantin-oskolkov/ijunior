@@ -2,18 +2,27 @@ class Program
    {
       static void Main(string[] args)
       {
-        int[] numbers = {1, 2, 3, 4, 5, 6, 7};
-        int number = numbers[0];
+         int[] numbers = {1, 2, 3, 4, 5, 6, 7};
+         int number;
 
-         for (int i = 0; i < numbers.Length - 1; i++)
+         Console.Write("сколько раз сдвинуть массив в лево: ");
+         int shift = Convert.ToInt32(Console.ReadLine());
+
+         for (int i = 0; i < shift; i++)
          {
-            numbers[i] = numbers[i + 1];            
+            number = numbers[0];
+
+            for (int j = 0; j < numbers.Length - 1; j++)
+            {
+               numbers[j] = numbers[j + 1];
+            }
+
+            numbers[numbers.Length - 1] = number;
          }
-         
-         numbers[numbers.Length - 1] = number;         
 
          foreach (var item in numbers)
          {
             Console.Write(item + " ");
          }
       }
+   }
