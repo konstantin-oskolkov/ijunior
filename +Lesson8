@@ -1,0 +1,19 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+        int[] numbers = {1, 2, 3, 4, 5, 6, 7};
+        int number = numbers[0];
+
+         for (int i = 0; i < numbers.Length - 1; i++)
+         {
+            numbers[i] = numbers[i + 1];            
+         }
+         
+         numbers[numbers.Length - 1] = number;         
+
+         foreach (var item in numbers)
+         {
+            Console.Write(item + " ");
+         }
+      }
