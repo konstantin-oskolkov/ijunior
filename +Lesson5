@@ -6,7 +6,7 @@ class Program
          int corrector = 1;
          int number = 0;
          int count = 0;
-         int tmp = 0;
+         int iteration = 0;
 
          for (int i = 0; i < numbers.Length - 1; i++)
          {
@@ -14,9 +14,9 @@ class Program
             {
                count++;
 
-               if (count > tmp)
+               if (count > iteration)
                {
-                  tmp = count;
+                  iteration = count;
                   number = numbers[i];
                }
             }
@@ -31,5 +31,5 @@ class Program
             Console.Write(item + " ");
          }
 
-         Console.WriteLine($"\nчисло - {number}, повторений - {tmp + corrector}");
+         Console.WriteLine($"\nчисло - {number}, повторений - {iteration + corrector}");
       }
