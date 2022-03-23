@@ -1,25 +1,29 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
          int constanta = 2;
          int result = constanta;
          int count = 1;
          int minValue = 1;
          int maxValue = 101;
-         bool outValue = true;
+         bool isWouk = true;
 
          Random random = new Random();
          int number = random.Next(minValue, maxValue);
 
-         Console.WriteLine("заданное число: " + number);
-         Console.WriteLine(constanta);
-
-         while (number > constanta && outValue)
+         while (isWouk)
          {
             result = result * constanta;
 
             if (number < result)
             {
-               outValue = false;
+               isWouk = false;
             }
-            Console.WriteLine(result);
+
             count++;
          }
-         Console.WriteLine($"для {constanta} показатель степени: {count}\n");
+
+         Console.WriteLine($" для заданного числа {number}\n {constanta} в степени {count}\n будет: {result}");
+      }
+  }
