@@ -2,8 +2,8 @@ class Program
    {
       static void Main(string[] args)
       {
-         int constanta = 2;
-         int result = constanta;
+         int power = 2;
+         int result = power;
          int count = 1;
          int minValue = 1;
          int maxValue = 101;
@@ -14,7 +14,7 @@ class Program
 
          while (isWouk)
          {
-            result = result * constanta;
+            result = result * power;
 
             if (number < result)
             {
@@ -24,6 +24,6 @@ class Program
             count++;
          }
 
-         Console.WriteLine($" для заданного числа {number}\n {constanta} в степени {count}\n будет: {result}");
+         Console.WriteLine($" для заданного числа {number}\n {power} в степени {count}\n будет: {result}");
       }
   }
