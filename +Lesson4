@@ -1,3 +1,7 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
             int enclouser = 0;
             int count = 0;
 
@@ -29,3 +33,5 @@
             {
                Console.WriteLine("строка не является корректным скобочным выражением");
             }
+     }
+ }
