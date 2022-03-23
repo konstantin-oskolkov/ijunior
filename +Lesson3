@@ -1,0 +1,25 @@
+         int constanta = 2;
+         int result = constanta;
+         int count = 1;
+         int minValue = 1;
+         int maxValue = 101;
+         bool outValue = true;
+
+         Random random = new Random();
+         int number = random.Next(minValue, maxValue);
+
+         Console.WriteLine("заданное число: " + number);
+         Console.WriteLine(constanta);
+
+         while (number > constanta && outValue)
+         {
+            result = result * constanta;
+
+            if (number < result)
+            {
+               outValue = false;
+            }
+            Console.WriteLine(result);
+            count++;
+         }
+         Console.WriteLine($"для {constanta} показатель степени: {count}\n");
