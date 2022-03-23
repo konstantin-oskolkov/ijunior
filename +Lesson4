@@ -1,0 +1,31 @@
+            int enclouser = 0;
+            int count = 0;
+
+            string chekString = Console.ReadLine();
+
+            foreach (var symbol in chekString)
+            {
+               if (symbol == '(')
+                  count++;
+
+               if (symbol == ')')
+               {
+                  if (count > enclouser)
+                  {
+                     enclouser = count;
+                  }
+                  count--;
+               }
+
+               if (count < 0)
+                  break;
+            }
+
+            if (count == 0)
+            {
+               Console.WriteLine("строка является корректным скобочным выражением \nмаксимальная глубина вложенности скобок: " + enclouser);
+            }
+            else
+            {
+               Console.WriteLine("строка не является корректным скобочным выражением");
+            }
