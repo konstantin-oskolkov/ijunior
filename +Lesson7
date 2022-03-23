@@ -1,0 +1,13 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         string text = "я из лесу вышел был сильный мороз";
+         string[] words = text.Split(' ');
+
+         foreach (var word in words)
+         {
+           Console.WriteLine($"{word}");
+         }
+      }
+   }
