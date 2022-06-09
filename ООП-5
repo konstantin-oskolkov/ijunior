@@ -4,9 +4,11 @@ namespace OOP_5
    {
       static void Main(string[] args)
       {
+         bool isWork = true;
+
          var storage = new ServiceBook();
 
-         while (true)
+         while (isWork)
          {
             Console.Write("\nМЕНЮ: \n1 - Добавить книгу \n2 - Удалить книгу \n3 - Показать все книги \n4 - Поиск книги \n5 - Выход \nномер команды: ");
             string select = Console.ReadLine();
@@ -14,10 +16,7 @@ namespace OOP_5
             switch (select)
             {
                case "1":
-                  storage.CreateBook(
-                     ReadValue("название книги: "),
-                     ReadValue("автор: "),
-                     ReadValue("год издания: ")
+                  storage.CreateBook(ReadValue("название книги: "), ReadValue("автор: "), ReadValue("год издания: ")
                      );
                   break;
 
@@ -34,7 +33,8 @@ namespace OOP_5
                   break;
 
                case "5":
-                  return;
+                  isWork = false;
+                  break;
 
                default:
                   Console.WriteLine("Нет такой команды");
