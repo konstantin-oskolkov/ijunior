@@ -22,13 +22,7 @@ namespace OOP_5
                   break;
 
                case "2":
-                  storage.ShowAllBook().ForEach(i => Console.WriteLine(i));
-                  int.TryParse(ReadValue("введите номер книги для удаления: "), out int number);
-
-                  if (storage.RemoveBook(number))
-                     Console.Write("Книга удалена");
-                  else
-                     Console.WriteLine("нет такой книги");
+                  RemoveBook();
                   break;
 
                case "3":
@@ -54,16 +48,27 @@ namespace OOP_5
             Console.Write($"{message}");
             return Console.ReadLine();
          }
+
+         void RemoveBook()
+         {
+            storage.ShowAllBook().ForEach(i => Console.WriteLine(i));
+            int.TryParse(ReadValue("введите номер книги для удаления: "), out int number);
+
+            if (storage.RemoveBook(number))
+               Console.Write("Книга удалена");
+            else
+               Console.WriteLine("нет такой книги");
+         }
       }
    }
 
    class ServiceBook
    {
-      private List<Book> storageBooks;
+      private List<Book> _storageBooks;
 
       public ServiceBook()
       {
-         storageBooks = new List<Book>()
+         _storageBooks = new List<Book>()
            {
             new Book("Завершение", "Пупкин", "2020"),
             new Book("Посторонним В", "Пятачек", "1969"),
@@ -72,28 +77,28 @@ namespace OOP_5
            };
       }
 
-      public void CreateBook(string title, string author, string date)
+      public void CreateBook(string title, string author, string data)
       {
-         storageBooks.Add(new Book(title, author, date));
+         _storageBooks.Add(new Book(title, author, data));
       }
 
       public bool RemoveBook(int id)
       {
-         var removeBook = storageBooks.Find(book => book.Id == id);
+         var removeBook = _storageBooks.Find(book => book.Id == id);
 
          if (removeBook == null)
             return false;
-         return storageBooks.Remove(removeBook);
+         return _storageBooks.Remove(removeBook);
       }
 
       public List<Book> FindBooks(string find)
       {
-         return storageBooks.FindAll(book => (book.Author.Contains(find) || book.Title.Contains(find) || book.Date.Contains(find)));
+         return _storageBooks.FindAll(book => (book.Author.Contains(find) || book.Title.Contains(find) || book.Data.Contains(find)));
       }
 
       public List<Book> ShowAllBook()
       {
-         return storageBooks;
+         return _storageBooks;
       }
 
    }
@@ -103,20 +108,20 @@ namespace OOP_5
       public static int count { get; private set; } = 0;
       public int Id { get; private set; }
       public string Title { get; private set; }
-      public string Date { get; private set; }
+      public string Data { get; private set; }
       public string Author { get; private set; }
 
-      public Book(string title, string author, string date)
+      public Book(string title, string author, string data)
       {
          Id = ++count;
          Title = title;
          Author = author;
-         Date = date;
+         Data = data;
       }
 
       public override string ToString()
       {
-         return "номер: " + Id + " | название: " + Title + " | автор: " + Author + " | год издания: " + Date;
+         return "номер: " + Id + " | название: " + Title + " | автор: " + Author + " | год издания: " + Data;
       }
    }
 }
