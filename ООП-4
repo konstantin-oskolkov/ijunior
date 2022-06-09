@@ -1,0 +1,152 @@
+namespace OOP_4
+{
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         Player Player = new Player();
+         Deck PlayDeck = new Deck();
+
+         bool isPlay = true;
+
+         PlayDeck.Shuffle();
+
+         while (isPlay)
+         {
+            switch (ReadValue("Выберите дуйствие:\n1-взять карту\n2-вывод карт игрока на экран\n3-закончить игру"))
+            {
+               case "1":
+                  Player.TakeCard(PlayDeck.DealCard());
+                  break;
+
+               case "2":
+                  Player.ShowInfo().ForEach(Console.WriteLine);
+                  break;
+
+               case "3":
+                  isPlay = false;
+                  break;
+
+               default:
+                  Console.WriteLine("command not exist");
+                  break;
+            }
+         }
+      }
+
+      static string ReadValue(string message)
+      {
+         Console.WriteLine(message);
+         return Console.ReadLine();
+      }
+   }
+
+   class Deck
+   {
+      Queue<Card> deckOfCards;
+
+      private List<int> _cardsAsInt;
+
+      private int _cardCount = 52;
+      private int _cardValueCount = 13;
+      private int _cardSuitCount = 4;
+
+      Random generator = new Random();
+
+      public void Shuffle()
+      {
+         deckOfCards = new Queue<Card>();
+         GenerateCardsAsInt();
+
+         for (int i = _cardCount-1; i >= 0; i--)
+         {
+            int index = generator.Next(i+1);
+            int temp = _cardsAsInt[i];
+            _cardsAsInt[i] = _cardsAsInt[index];
+            _cardsAsInt[index] = temp;
+         }
+         FillDeck();
+      }
+
+      public Card DealCard()
+      {
+        return deckOfCards.Dequeue();
+      }
+
+      private void GenerateCardsAsInt()
+      {
+         _cardsAsInt = new List<int>();
+         for (int i = 0; i < _cardCount; i++)
+         {
+            _cardsAsInt.Add(i);
+         }
+      }
+
+      private void FillDeck()
+      {
+         for (int i = 0; i < _cardsAsInt.Count; i++)
+         {
+            CardSuit suit = (CardSuit)(_cardsAsInt[i] % _cardSuitCount);
+            CardValue value = (CardValue)(_cardsAsInt[i] % _cardValueCount + 1);
+            deckOfCards.Enqueue(new Card(suit, value));
+         }
+      }
+   }
+
+   class Player
+   {
+      private List<Card> _cards = new List<Card>();
+
+      public void TakeCard(Card take) 
+      {
+         _cards.Add(take);
+      }
+
+      public List<Card> ShowInfo()
+      {
+         return _cards;
+      }
+   }
+
+   class Card
+   {
+      private CardSuit _suit;
+      private CardValue _value;
+
+      public Card(CardSuit cardSuit, CardValue cardValue)
+      {
+         _suit = cardSuit;
+         _value = cardValue;
+      }
+
+      public override string ToString()
+      {
+         return "Масть - " + _suit + " | " + "Наминал - " + _value;
+      }
+   }
+
+   public enum CardSuit
+   {
+      Spades,
+      Diamonds,
+      Hearts,
+      Clubs
+   }
+
+   public enum CardValue
+   {
+      Ace,
+      Deuce,
+      Three,
+      Four,
+      Five,
+      Six,
+      Seven,
+      Eight,
+      Nine,
+      Ten,
+      Jack,
+      Queen,
+      King
+   }
+}
