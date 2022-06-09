@@ -1,167 +1,114 @@
 namespace OOP_5
 {
-   class Program
+  class Program
    {
       static void Main(string[] args)
       {
-         bool isWork = true;
-         BookService service = new BookService();
+         var storage = new ServiceBook();
 
-         while (isWork)
+         while (true)
          {
-            Console.Write("\nМЕНЮ: \n1 - Добавить книгу \n2 - Удалить книгу \n3 - Показать содержимое библиотеки \n4 - Выход \nномер команды: ");
+            Console.Write("\nМЕНЮ: \n1 - Добавить книгу \n2 - Удалить книгу \n3 - Показать все книги \n4 - Поиск книги \n5 - Выход \nномер команды: ");
             string select = Console.ReadLine();
 
             switch (select)
             {
-               case "1": service.AddBook(); break;
+               case "1":
+                  storage.CreateBook(
+                     ReadValue("название книги: "),
+                     ReadValue("автор: "),
+                     ReadValue("год издания: ")
+                     );
+                  break;
 
-               case "2": service.RemoveBook(); break;
+               case "2":
+                  storage.ShowAllBook().ForEach(i => Console.WriteLine(i));
+                  int.TryParse(ReadValue("введите номер книги для удаления: "), out int number);
 
-               case "3": service.ShowInfo(); break;
+                  if (storage.RemoveBook(number))
+                     Console.Write("Книга удалена");
+                  else
+                     Console.WriteLine("нет такой книги");
+                  break;
 
-               case "4": Console.WriteLine("Программа завершает работу"); isWork = false; break;
+               case "3":
+                  storage.ShowAllBook().ForEach(i => Console.WriteLine(i));
+                  break;
 
-               default: Console.WriteLine("Нет такой команды"); break;
+               case "4":
+                  storage.FindBooks(ReadValue("Введите для поиска автора, название или дату: ")).ForEach(Console.WriteLine);
+                  break;
+
+               case "5":
+                  return;
+
+               default:
+                  Console.WriteLine("Нет такой команды");
+                  break;
             }
             Console.ReadKey(); Console.Clear();
          }
-      }
-   }
 
-   class BookService
-   {
-      Storage storage = new Storage();
-
-      public void AddBook()
-      {
-         string title = default;
-         string author = default;
-         string date = default;
-
-         Console.Write("название книги: ");
-         title = Console.ReadLine();
-
-         Console.Write("автор: ");
-         author = Console.ReadLine();
-
-         Console.Write("год издания: ");
-         date = Console.ReadLine();
-
-         if (title == "" & author == "" & date == "")
+         string ReadValue(string message)
          {
-            Console.WriteLine("Вы не ввели данные");
-         }
-         else
-         {
-            storage.AddBook(title, author, date);
-         }
-      }
-
-      public void RemoveBook()
-      {
-         int corrector = 1;
-
-         storage.ShowAllBook();
-
-         Console.Write("введите номер книги для удаления: ");
-         string select = Console.ReadLine();
-
-         if (int.TryParse(select, out int number))
-         {
-            storage.RemoweBook(number - corrector);
-         }
-         else
-         {
-            Console.WriteLine("команда не найдена");
-         }
-      }
-
-      public void ShowInfo()
-      {
-         Console.Write("1 - показать все книги \n2 - поиск \nномер команды: ");
-         string select = Console.ReadLine();
-
-         switch (select)
-         {
-            case "1":
-               storage.ShowAllBook();
-               break;
-
-            case "2":
-               Console.Write("1 - найти по названию книги | 2 - найти по автору | 3 - найти по дате \nномер команды: ");
-               string choice = Console.ReadLine();
-
-               Console.Write("введите запрос: ");
-               string find = Console.ReadLine().ToLower();
-
-               storage.FindBooks(choice, find);
-               break;
-
-            default: Console.WriteLine("команда не найдена"); break;
+            Console.Write($"{message}");
+            return Console.ReadLine();
          }
       }
    }
 
-   class Storage
+   class ServiceBook
    {
-      public List<Book> books;
+      private List<Book> storageBooks;
 
-      public Storage()
+      public ServiceBook()
       {
-         books = new List<Book>()
-         {
+         storageBooks = new List<Book>()
+           {
             new Book("Завершение", "Пупкин", "2020"),
             new Book("Посторонним В", "Пятачек", "1969"),
             new Book("Я в грязи или крови", "Бараш", "2010"),
             new Book("Начало", "Пупкин", "2010")
-         };
+           };
       }
 
-      public void AddBook(string title, string author, string date)
+      public void CreateBook(string title, string author, string date)
       {
-         books.Add(new Book(title, author, date));
+         storageBooks.Add(new Book(title, author, date));
       }
 
-      public void RemoweBook(int number)
+      public bool RemoveBook(int id)
       {
-         if (number >= 0 & number < books.Count)
-         {
-            books.RemoveAt(number);
-            Console.WriteLine("книга удалена");
-         }
-         else
-         {
-            Console.WriteLine("нет такой книги");
-         }
+         var removeBook = storageBooks.Find(book => book.Id == id);
+
+         if (removeBook == null)
+            return false;
+         return storageBooks.Remove(removeBook);
       }
 
-      public void ShowAllBook()
+      public List<Book> FindBooks(string find)
       {
-         int count = 0;
-         books.ForEach(books => Console.WriteLine(++count + " " + books.ToString()));
+         return storageBooks.FindAll(book => (book.Author.Contains(find) || book.Title.Contains(find) || book.Date.Contains(find)));
       }
 
-      public void FindBooks(string type, string find)
+      public List<Book> ShowAllBook()
       {
-         switch (type)
-         {
-            case "1": books.FindAll(n => n.Title.ToLower().Contains(find.ToLower())).ForEach(Console.WriteLine); break;
-            case "2": books.FindAll(n => n.Author.ToLower().Contains(find.ToLower())).ForEach(Console.WriteLine); break;
-            case "3": books.FindAll(n => n.Date.ToLower().Contains(find.ToLower())).ForEach(Console.WriteLine); break;
-            default: Console.WriteLine("команда не найдена"); break;
-         }
+         return storageBooks;
       }
+
    }
 
    class Book
    {
+      public static int count { get; private set; } = 0;
+      public int Id { get; private set; }
       public string Title { get; private set; }
       public string Date { get; private set; }
       public string Author { get; private set; }
 
       public Book(string title, string author, string date)
       {
+         Id = ++count;
          Title = title;
          Author = author;
          Date = date;
@@ -169,7 +116,7 @@ namespace OOP_5
 
       public override string ToString()
       {
-         return "название: " + Title + " | автор: " + Author + " | год издания: " + Date;
+         return "номер: " + Id + " | название: " + Title + " | автор: " + Author + " | год издания: " + Date;
       }
    }
 }
