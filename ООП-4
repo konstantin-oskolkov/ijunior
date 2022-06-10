@@ -4,23 +4,23 @@ namespace OOP_4
    {
       static void Main(string[] args)
       {
-         Player Player = new Player();
-         Deck PlayDeck = new Deck();
+         Player player = new Player();
+         Deck playDeck = new Deck();
 
          bool isPlay = true;
 
-         PlayDeck.Shuffle();
+         playDeck.Shuffle();
 
          while (isPlay)
          {
             switch (ReadValue("Выберите дуйствие:\n1-взять карту\n2-вывод карт игрока на экран\n3-закончить игру"))
             {
                case "1":
-                  Player.TakeCard(PlayDeck.DealCard());
+                  player.TakeCard(playDeck.DealCard());
                   break;
 
                case "2":
-                  Player.ShowInfo().ForEach(Console.WriteLine);
+                  player.ShowInfo();
                   break;
 
                case "3":
@@ -43,8 +43,7 @@ namespace OOP_4
 
    class Deck
    {
-      Queue<Card> deckOfCards;
-
+      private Queue<Card> _deckOfCards;
       private List<int> _cardsAsInt;
 
       private int _cardCount = 52;
@@ -55,7 +54,7 @@ namespace OOP_4
 
       public void Shuffle()
       {
-         deckOfCards = new Queue<Card>();
+         _deckOfCards = new Queue<Card>();
          GenerateCardsAsInt();
 
          for (int i = _cardCount-1; i >= 0; i--)
@@ -70,7 +69,7 @@ namespace OOP_4
 
       public Card DealCard()
       {
-        return deckOfCards.Dequeue();
+        return _deckOfCards.Dequeue();
       }
 
       private void GenerateCardsAsInt()
@@ -88,7 +87,7 @@ namespace OOP_4
          {
             CardSuit suit = (CardSuit)(_cardsAsInt[i] % _cardSuitCount);
             CardValue value = (CardValue)(_cardsAsInt[i] % _cardValueCount + 1);
-            deckOfCards.Enqueue(new Card(suit, value));
+            _deckOfCards.Enqueue(new Card(suit, value));
          }
       }
    }
@@ -102,9 +101,9 @@ namespace OOP_4
          _cards.Add(take);
       }
 
-      public List<Card> ShowInfo()
+      public void ShowInfo()
       {
-         return _cards;
+         _cards.ForEach(Console.WriteLine);
       }
    }
 
