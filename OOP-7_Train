@@ -1,0 +1,210 @@
+namespace OOP_7
+{
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         bool isWork = true;
+         int countPlaces = 60;
+         int minPassenger = 100;
+         int maxPassenger = 2001;
+         bool hasOnTheWay = false;
+
+         Station station = new Station();
+
+         while (isWork)
+         {
+            station.ShowInfo();
+            switch (ReadValue("\n1-скомпоновать поезд\n2-отправить поезд\n3-выход \nВыберите действие => "))
+            {
+               case "1":
+                  station.CreatePassengers(minPassenger, maxPassenger);
+                  station.CreateTrain(new Train(hasOnTheWay), countPlaces);
+                  break;
+
+               case "2":
+                  station.SendTrain(ReadValue("Введите номер поезда, который хотите отправить:"));
+                  break;
+
+               case "3":
+                  isWork = false;
+                  break;
+
+               default:
+                  Console.WriteLine("Нет такой команды");
+                  break;
+            }
+            Console.Clear();
+         }
+      }
+
+      static string ReadValue(string message)
+      {
+         Console.Write(message);
+         return Console.ReadLine();
+      }
+   }
+
+   class Station
+   {
+      private Queue<Passenger> _passengers;
+      private List<Train> _trains;
+      private Random _random;
+      private string[] _cities = {"Астрахань", "Белогород", "Вологда", "Грозный",
+         "Екатеринбург", "Иваново", "Йошкар-Ола", "Казань", "Липецк", "Москва",
+         "Омск", "Пермь", "Пенза", "Ростов", "Саратов", "Санкт-Петербург", "Тверь" };
+
+      public Station()
+      {
+         _random = new Random();
+         _passengers = new Queue<Passenger>();
+         _trains = new List<Train>();
+      }
+
+      private void SetDirection(Train train)
+      {
+
+         int departureIndex = _random.Next(0, _cities.Length);
+         int destinationIndex = _random.Next(0, _cities.Length);
+
+         while (destinationIndex == departureIndex)
+            destinationIndex = _random.Next(0, _cities.Length);
+
+         train.SetDirection(_cities[departureIndex], _cities[destinationIndex]);
+      }
+
+      public void CreatePassengers(int minValue, int maxValue)
+      {
+         var passengersCount = _random.Next(minValue, maxValue);
+
+         for (int i = 0; i < passengersCount; i++)
+         {
+            _passengers.Enqueue(new Passenger(i));
+         }
+      }
+
+      public void CreateTrain(Train train, int countPlaces)
+      {
+         SetDirection(train);
+         train.PassengerCount(_passengers.Count);
+
+         for (int i = 1; 0 < _passengers.Count; i++)
+         {
+            train.AddWagon(CreateWagon(new Wagon(i), countPlaces));
+         }
+
+         _trains.Add(train);
+      }
+
+      private Wagon CreateWagon(Wagon wagon, int countPlaces)
+      {
+         for (int i = 0; i < countPlaces; i++)
+         {
+            if (_passengers.Count > 0)
+            {
+               wagon.AddPlace(new WagonPlace(i, _passengers.Dequeue()));
+            }
+         }
+         return wagon;
+      }
+
+      public void ShowInfo()
+      {
+         if (_trains.Count == 0)
+         {
+            Console.WriteLine("Нет поездов");
+         }
+         else
+         {
+            _trains.ForEach(Console.WriteLine);
+         }
+      }
+
+      public void SendTrain(string number)
+      {
+         var train = _trains.Find(f => f.Id == Int32.Parse(number));
+         train.hasOnTheWay = true;
+      }
+   }
+
+   class Passenger
+   {
+      public int Id { get; private set; }
+
+      public Passenger(int id)
+      {
+         Id = id;
+      }
+   }
+
+   class Train
+   {
+      static int Count = 1;
+
+      public int PassengersCount { get; private set; }
+      public int Id { get; private set; }
+      public string Departure { get; private set; }
+      public string Destination { get; private set; }
+
+      public bool hasOnTheWay;
+
+      private List<Wagon> _wagons = new List<Wagon>();
+
+      public Train(bool hasOnTheWay)
+      {
+         Id = Count++;
+         this.hasOnTheWay = hasOnTheWay;
+      }
+
+      public void AddWagon(Wagon wagon)
+      {
+         _wagons.Add(wagon);
+      }
+
+      public void SetDirection(string departure, string destination)
+      {
+         Departure = departure;
+         Destination = destination;
+      }
+
+      public void PassengerCount(int count)
+      {
+         PassengersCount = count;
+      }
+
+      public override string ToString()
+      {
+         return $"|{Id}|Поезд: {Departure} - {Destination} | Вагонов: {_wagons.Count} | Пассажиров: {PassengersCount} |" + (hasOnTheWay ? "В пути" : "На станции");      //
+      }
+   }
+
+   class Wagon
+   {
+      public int Number { get; private set; }
+
+      private List<WagonPlace> _places = new List<WagonPlace>();
+
+      public Wagon(int number)
+      {
+         Number = number;
+      }
+
+      public List<WagonPlace> AddPlace(WagonPlace wagonPlace)
+      {
+         _places.Add(wagonPlace);
+         return _places;
+      }
+   }
+
+   class WagonPlace
+   {
+      public int SeatNumber { get; private set; }
+      public Passenger Passenger { get; private set; }
+
+      public WagonPlace(int seatNumber, Passenger passenger)
+      {
+         SeatNumber = seatNumber;
+         Passenger = passenger;
+      }
+   }
+}
