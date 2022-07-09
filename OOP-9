@@ -14,9 +14,7 @@ class Program
 
    class Shop
    {
-      public List<Basked> Baskeds { get; private set; }
       private Cassa _cassa = new Cassa();
-
       private Queue<Client> _buyer = new Queue<Client>();
       private List<Product> _products = new List<Product>() {
             new Product("Хлеб", 40),
@@ -86,10 +84,6 @@ class Program
                }
             }
          }
-         else
-         {
-            isWork = false;
-         }
       }
 
       private void TakeProduct(Client client)
@@ -101,8 +95,8 @@ class Program
    class Client
    {
       public Basked Basked { get; private set; }
-      public List<Product> Bag { get; private set; }
 
+      private List<Product> Bag;
       private int _money;
       private int _costToPay = 0;
 
