@@ -1,0 +1,197 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         int countBuyer = 5;
+         int minMoney = 200;
+         int maxMoney = 700;
+
+         Shop shop = new Shop();
+         shop.FormAQueue(countBuyer, minMoney, maxMoney);
+         shop.ServiceBuyer();
+      }
+   }
+
+   class Shop
+   {
+      public List<Basked> Baskeds { get; private set; }
+      private Cassa _cassa = new Cassa();
+
+      private Queue<Client> _buyer = new Queue<Client>();
+      private List<Product> _products = new List<Product>() {
+            new Product("Хлеб", 40),
+            new Product("Бумага", 100),
+            new Product("Шампунь", 180),
+            new Product("Вантуз", 150),
+            new Product("Стерка", 10),
+            new Product("Мыло", 20),
+            new Product("Пельмени", 250),
+            new Product("Рыба", 250),
+            new Product("Масло", 70),
+            new Product("Карандаш", 30),
+            new Product("Содовая", 70)};
+
+      private Random _value = new Random();
+
+      public void FormAQueue(int clientsCount, int minMoneyValue, int maxMoneyValue)
+      {
+         for (int i = 0; i < clientsCount; i++)
+         {
+            var buyer = new Client(_value.Next(minMoneyValue, maxMoneyValue), new Basked());
+
+            buyer.СhooseProducts(_products, _value);
+
+            _buyer.Enqueue(buyer);
+         }
+      }
+
+      public void ServiceBuyer()
+      {
+         int queueLength = _buyer.Count;
+
+         for (int i = 0; i < queueLength; i++)
+         {
+            _cassa.Sell(_buyer.Dequeue());
+         }
+      }
+   }
+
+   class Cassa
+   {
+      public Basked Basked { get; private set; }
+
+      private int _money = 0;
+
+      public Cassa()
+      {
+         Basked = new Basked();
+      }
+
+      public void Sell(Client client)
+      {
+         bool isWork = true;
+
+         if (client.Basked.Products.Count > 0)
+         {
+            while (isWork)
+            {
+               if (client.ChekSolvency())
+               {
+                  _money += client.ToPay();
+                  isWork = false;
+               }
+               else
+               {
+                  TakeProduct(client);
+               }
+            }
+         }
+         else
+         {
+            isWork = false;
+         }
+      }
+
+      private void TakeProduct(Client client)
+      {
+         Basked.AddProduct(client.ThrowProduct(new Random()));
+      }
+   }
+
+   class Client
+   {
+      public Basked Basked { get; private set; }
+      public List<Product> Bag { get; private set; }
+
+      private int _money;
+      private int _costToPay = 0;
+
+      public Client(int money, Basked basked)
+      {
+         _money = money;
+         Basked = basked;
+         Bag = new List<Product>();
+      }
+
+      public void СhooseProducts(List<Product> products, Random value)
+      {
+         int length = value.Next(products.Count);
+         
+         for (int i = 0; i < length; i++)
+         {
+            var product = products[value.Next(products.Count)];
+            _costToPay += product.Price;
+            Basked.AddProduct(product);
+         }
+      }
+
+      private void TakeProducts()
+      {
+         Bag.AddRange(Basked.Products);
+         Basked.Products.Clear();
+      }
+
+      public Product ThrowProduct(Random value)
+      {
+         var product = Basked.Products[value.Next(Basked.Products.Count)];
+         _costToPay -= product.Price;
+         Basked.RemoveProduct(product);
+
+         return product;
+      }
+
+      public bool ChekSolvency()
+      {
+         if (_money >= _costToPay)
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
+
+      public int ToPay()
+      {
+         TakeProducts();
+
+         _money -= _costToPay;
+         return _costToPay;
+      }
+   }
+
+   class Basked
+   {
+      public List<Product> Products { get; private set; }
+
+      public Basked()
+      {
+         Products = new List<Product>();
+      }
+
+      public void AddProduct(Product product)
+      {
+         Products.Add(product);
+      }
+
+      public void RemoveProduct(Product product)
+      {
+         Products.Remove(product);
+      }
+   }
+
+   class Product
+   {
+      public string Name { get; private set; }
+      public int Price { get; private set; }
+
+      public Product(string name, int price)
+      {
+         Name = name;
+         Price = price;
+      }
+
+      public override string ToString() => Name + "-" + Price;
+   }
+}
