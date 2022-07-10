@@ -14,7 +14,7 @@ class Program
 
    class Shop
    {
-      private Cassa _cassa = new Cassa();
+      private CashDesk _cassa = new CashDesk();
       private Queue<Client> _buyer = new Queue<Client>();
       private List<Product> _products = new List<Product>() {
             new Product("Хлеб", 40),
@@ -35,7 +35,7 @@ class Program
       {
          for (int i = 0; i < clientsCount; i++)
          {
-            var buyer = new Client(_value.Next(minMoneyValue, maxMoneyValue), new Basked());
+            var buyer = new Client(_value.Next(minMoneyValue, maxMoneyValue));
 
             buyer.СhooseProducts(_products, _value);
 
@@ -54,89 +54,79 @@ class Program
       }
    }
 
-   class Cassa
+   class CashDesk
    {
-      public Basked Basked { get; private set; }
+      public int Money { get; private set; } = 0;
 
-      private int _money = 0;
-
-      public Cassa()
-      {
-         Basked = new Basked();
-      }
+      private List<Product> _basked = new List<Product>();
 
       public void Sell(Client client)
       {
          bool isWork = true;
 
-         if (client.Basked.Products.Count > 0)
+         while (isWork)
          {
-            while (isWork)
+            if (client.ChekSolvency())
             {
-               if (client.ChekSolvency())
-               {
-                  _money += client.ToPay();
-                  isWork = false;
-               }
-               else
-               {
-                  TakeProduct(client);
-               }
+               Money += client.ToPay();
+               isWork = false;
+            }
+            else
+            {
+               TakeProduct(client);
             }
          }
       }
 
       private void TakeProduct(Client client)
       {
-         Basked.AddProduct(client.ThrowProduct(new Random()));
+         _basked.Add(client.ThrowProduct(new Random()));
       }
    }
 
    class Client
    {
-      public Basked Basked { get; private set; }
+      public int Money { get; private set; }
 
-      private List<Product> Bag;
-      private int _money;
+      private List<Product> _basked = new List<Product>();
+      private List<Product> _bag = new List<Product>();
       private int _costToPay = 0;
 
-      public Client(int money, Basked basked)
+      public Client(int money)
       {
-         _money = money;
-         Basked = basked;
-         Bag = new List<Product>();
+         Money = money;
       }
 
       public void СhooseProducts(List<Product> products, Random value)
       {
          int length = value.Next(products.Count);
-         
+
          for (int i = 0; i < length; i++)
          {
             var product = products[value.Next(products.Count)];
             _costToPay += product.Price;
-            Basked.AddProduct(product);
+            _basked.Add(product);
          }
       }
 
       private void TakeProducts()
       {
-         Bag.AddRange(Basked.Products);
-         Basked.Products.Clear();
+         _bag.AddRange(_basked);
+         _basked.Clear();
       }
 
       public Product ThrowProduct(Random value)
       {
-         var product = Basked.Products[value.Next(Basked.Products.Count)];
+         var product = _basked[value.Next(_basked.Count)];
+         _basked.Remove(product);
          _costToPay -= product.Price;
-         Basked.RemoveProduct(product);
 
          return product;
       }
 
       public bool ChekSolvency()
       {
-         if (_money >= _costToPay)
+         if (Money >= _costToPay)
          {
             return true;
          }
@@ -150,28 +140,8 @@ class Program
       {
          TakeProducts();
 
-         _money -= _costToPay;
+         Money -= _costToPay;
          return _costToPay;
-      }
-   }
-
-   class Basked
-   {
-      public List<Product> Products { get; private set; }
-
-      public Basked()
-      {
-         Products = new List<Product>();
-      }
-
-      public void AddProduct(Product product)
-      {
-         Products.Add(product);
-      }
-
-      public void RemoveProduct(Product product)
-      {
-         Products.Remove(product);
       }
    }
 
