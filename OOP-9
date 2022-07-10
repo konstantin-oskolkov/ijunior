@@ -2,74 +2,75 @@ class Program
    {
       static void Main(string[] args)
       {
-         int countBuyer = 5;
+         int countBuyers = 5;
          int minMoney = 200;
          int maxMoney = 700;
 
          Shop shop = new Shop();
-         shop.FormAQueue(countBuyer, minMoney, maxMoney);
-         shop.ServiceBuyer();
+         shop.FormQueue(countBuyers, minMoney, maxMoney);
+         shop.ServiceBuyers();
       }
    }
 
    class Shop
    {
-      private CashDesk _cassa = new CashDesk();
-      private Queue<Client> _buyer = new Queue<Client>();
-      private List<Product> _products = new List<Product>() {
-            new Product("Хлеб", 40),
-            new Product("Бумага", 100),
-            new Product("Шампунь", 180),
-            new Product("Вантуз", 150),
-            new Product("Стерка", 10),
-            new Product("Мыло", 20),
-            new Product("Пельмени", 250),
-            new Product("Рыба", 250),
-            new Product("Масло", 70),
-            new Product("Карандаш", 30),
-            new Product("Содовая", 70)};
+      private CashDesk _cashDesk = new CashDesk();
+      private Queue<Client> _buyers = new Queue<Client>();
+      private List<Product> _products = new List<Product>();
+      private Random _random = new Random();
 
-      private Random _value = new Random();
+      public Shop()
+      {
+         new Product("Хлеб", 40);
+         new Product("Бумага", 100);
+         new Product("Шампунь", 180);
+         new Product("Вантуз", 150);
+         new Product("Стерка", 10);
+         new Product("Мыло", 20);
+         new Product("Пельмени", 250);
+         new Product("Рыба", 250);
+         new Product("Масло", 70);
+         new Product("Карандаш", 30);
+         new Product("Содовая", 70);
+   }
 
-      public void FormAQueue(int clientsCount, int minMoneyValue, int maxMoneyValue)
+      public void FormQueue(int clientsCount, int minMoney, int maxMoney)
       {
          for (int i = 0; i < clientsCount; i++)
          {
-            var buyer = new Client(_value.Next(minMoneyValue, maxMoneyValue));
+            var buyer = new Client(_random.Next(minMoney, maxMoney));
 
-            buyer.СhooseProducts(_products, _value);
+            buyer.СhooseProducts(_products, _random);
 
-            _buyer.Enqueue(buyer);
+            _buyers.Enqueue(buyer);
          }
       }
 
-      public void ServiceBuyer()
+      public void ServiceBuyers()
       {
-         int queueLength = _buyer.Count;
-
-         for (int i = 0; i < queueLength; i++)
+         while (_buyers.Count > 0)
          {
-            _cassa.Sell(_buyer.Dequeue());
+            _cashDesk.Sell(_buyers.Dequeue());
          }
       }
    }
 
    class CashDesk
    {
-      public int Money { get; private set; } = 0;
-
       private List<Product> _basked = new List<Product>();
+
+      public int Money { get; private set; } = 0;
 
       public void Sell(Client client)
       {
-         bool isWork = true;
+         bool isPay = false;
 
-         while (isWork)
+         while (!isPay)
          {
             if (client.ChekSolvency())
             {
                Money += client.ToPay();
-               isWork = false;
+               isPay = true;
             }
             else
             {
@@ -86,38 +87,32 @@ class Program
 
    class Client
    {
-      public int Money { get; private set; }
-
+      private int _costToPay = 0;
       private List<Product> _basked = new List<Product>();
       private List<Product> _bag = new List<Product>();
-      private int _costToPay = 0;
+
+      public int Money { get; private set; }
 
       public Client(int money)
       {
          Money = money;
       }
 
-      public void СhooseProducts(List<Product> products, Random value)
+      public void СhooseProducts(List<Product> products, Random random)
       {
-         int length = value.Next(products.Count);
+         int length = random.Next(products.Count);
 
          for (int i = 0; i < length; i++)
          {
-            var product = products[value.Next(products.Count)];
+            var product = products[random.Next(products.Count)];
             _costToPay += product.Price;
             _basked.Add(product);
          }
       }
 
-      private void TakeProducts()
+      public Product ThrowProduct(Random random)
       {
-         _bag.AddRange(_basked);
-         _basked.Clear();
-      }
-
-      public Product ThrowProduct(Random value)
-      {
-         var product = _basked[value.Next(_basked.Count)];
+         var product = _basked[random.Next(_basked.Count)];
          _basked.Remove(product);
          _costToPay -= product.Price;
 
@@ -126,14 +121,7 @@ class Program
 
       public bool ChekSolvency()
       {
-         if (Money >= _costToPay)
-         {
-            return true;
-         }
-         else
-         {
-            return false;
-         }
+         return Money >= _costToPay;
       }
 
       public int ToPay()
@@ -142,6 +130,12 @@ class Program
 
          Money -= _costToPay;
          return _costToPay;
+      }
+
+      private void TakeProducts()
+      {
+         _bag.AddRange(_basked);
+         _basked.Clear();
       }
    }
 
