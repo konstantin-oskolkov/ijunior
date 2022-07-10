@@ -63,14 +63,14 @@ class Program
 
       public void Sell(Client client)
       {
-         bool isPay = false;
+         bool isWork = true;
 
-         while (!isPay)
+         while (isWork)
          {
             if (client.ChekSolvency())
             {
                Money += client.ToPay();
-               isPay = true;
+               isWork = false;
             }
             else
             {
