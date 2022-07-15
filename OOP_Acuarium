@@ -1,0 +1,129 @@
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         Console.Write("Введите максимальное количество рыб, которое может вместить аквариум: ");
+
+         Aquarium aquarium = new Aquarium(Convert.ToInt32(Console.ReadLine()));
+         aquarium.Work();
+      }
+   }
+
+   class Aquarium
+   {
+      private int _countFish;
+
+      private bool _isWork = true;
+      private List<Fish> _fishes = new List<Fish>();
+
+      public Aquarium(int number)
+      {
+         _countFish = number;
+      }
+
+      public void Work()
+      {
+         while (_isWork)
+         {
+            _fishes.ForEach(Console.WriteLine);
+
+            switch (ReadValue("\n1 - добавить рыбу\n2 - убрать рыбу\n3 - выйти\n№ - "))
+            {
+               case "1":
+                  AddFish(ReadValue("имя рыбы: "));
+                  break;
+
+               case "2":
+                  RemoveFish(ReadValue("какую рыбу вы хотите убрать: "));
+                  break;
+
+               case "3":
+                  _isWork = false;
+                  break;
+            }
+
+            for (int i = 0; i < _fishes.Count; i++)
+            {
+               if (_fishes[i].IsAlive)
+               {
+                  _fishes[i].AddAge();
+               }
+               else
+               {
+                  _fishes.Remove(_fishes[i]);
+               }
+            }
+
+            Console.Clear();
+         }
+      }
+
+      private Fish FindFish(string find)
+      {
+         return _fishes.Find(fish => (fish.Name.Contains(find)));
+      }
+
+      private string ReadValue(string message)
+      {
+         Console.Write(message);
+         return Console.ReadLine();
+      }
+
+      private void AddFish(string name)
+      {
+         if (_countFish > _fishes.Count)
+         {
+            Fish fish = new Fish(name);
+            _fishes.Add(fish);
+         }
+         else
+         {
+            Console.WriteLine("аквариум полон");
+            Console.ReadKey();
+         }
+      }
+
+      private void RemoveFish(string name)
+      {
+         var fish = FindFish(name);
+
+         if (fish == null)
+         {
+            Console.WriteLine("нет такой рыбы");
+            Console.ReadKey();
+         }
+         else
+         {
+            _fishes.Remove(fish);
+         }
+      }
+   }
+
+   class Fish
+   {
+      private int _maxAge = 10;
+      public int Age { get; private set; }
+      public string Name { get; private set; }
+      
+      public bool IsAlive
+      {
+         get
+         {
+            return Age < _maxAge;
+         }
+      }
+
+      public Fish(string name)
+      {
+         Name = name;
+         Age = 0;
+      }
+
+      public void AddAge()
+      {
+            Age++;
+      }
+
+      public override string ToString() => "Fish: имя: " + Name + " | возраст: " + Age + (IsAlive ? " | жива" : " | мертва");
+   }
+}
