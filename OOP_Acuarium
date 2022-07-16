@@ -1,28 +1,28 @@
-   class Program
+ class Program
    {
       static void Main(string[] args)
       {
-         Console.Write("Введите максимальное количество рыб, которое может вместить аквариум: ");
+         int capacity = 5;
 
-         Aquarium aquarium = new Aquarium(Convert.ToInt32(Console.ReadLine()));
+         Aquarium aquarium = new Aquarium(capacity);
          aquarium.Work();
       }
    }
 
    class Aquarium
    {
-      private int _countFish;
-
-      private bool _isWork = true;
+      private int _capacity;
       private List<Fish> _fishes = new List<Fish>();
 
-      public Aquarium(int number)
+      public Aquarium(int capacity)
       {
-         _countFish = number;
+         _capacity = capacity;
       }
 
       public void Work()
       {
+         bool _isWork = true;
+
          while (_isWork)
          {
             _fishes.ForEach(Console.WriteLine);
@@ -34,7 +34,7 @@
                   break;
 
                case "2":
-                  RemoveFish(ReadValue("какую рыбу вы хотите убрать: "));
+                  RemoveFish(ReadValue("какую рыбу вы хотите убрать №: "));
                   break;
 
                case "3":
@@ -51,16 +51,12 @@
                else
                {
                   _fishes.Remove(_fishes[i]);
+                  i--;
                }
             }
 
             Console.Clear();
          }
-      }
-
-      private Fish FindFish(string find)
-      {
-         return _fishes.Find(fish => (fish.Name.Contains(find)));
       }
 
       private string ReadValue(string message)
@@ -71,7 +67,7 @@
 
       private void AddFish(string name)
       {
-         if (_countFish > _fishes.Count)
+         if (_capacity > _fishes.Count)
          {
             Fish fish = new Fish(name);
             _fishes.Add(fish);
@@ -83,40 +79,36 @@
          }
       }
 
-      private void RemoveFish(string name)
+      private void RemoveFish(string fishId)
       {
-         var fish = FindFish(name);
+         int number;
 
-         if (fish == null)
+         if (int.TryParse(fishId, out number))
          {
-            Console.WriteLine("нет такой рыбы");
-            Console.ReadKey();
+            _fishes.Remove(_fishes.Find(fish => fish.Id == number));
          }
          else
          {
-            _fishes.Remove(fish);
+            Console.WriteLine("нет такой рыбы");
+            Console.ReadKey();
          }
       }
    }
 
    class Fish
    {
-      private int _maxAge = 10;
+      private static int count = 0;
+      private int _maxAge = 11;
+      public bool IsAlive => Age < _maxAge;
+
+      public int Id { get; set; }
       public int Age { get; private set; }
       public string Name { get; private set; }
-      
-      public bool IsAlive
-      {
-         get
-         {
-            return Age < _maxAge;
-         }
-      }
 
       public Fish(string name)
       {
+         Id = ++count;
          Name = name;
-         Age = 0;
       }
 
       public void AddAge()
@@ -124,6 +116,6 @@
             Age++;
       }
 
-      public override string ToString() => "Fish: имя: " + Name + " | возраст: " + Age + (IsAlive ? " | жива" : " | мертва");
+      public override string ToString() => "Fish id: " + Id + " | имя: " + Name + (IsAlive ? " | возраст: " + Age + " | жива" : " | мертва");
    }
 }
