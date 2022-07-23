@@ -1,0 +1,206 @@
+   class Program
+   {
+      static void Main(string[] args)
+      {
+         List<Animal> animals = new List<Animal>()
+         {
+            new Tiger(Gender.Male),
+            new Monkey(Gender.Male),
+            new Tiger(Gender.Female),
+            new Giraffe(Gender.Female),
+            new Giraffe(Gender.Female),
+            new Tiger(Gender.Female),
+            new Giraffe(Gender.Male),
+            new Giraffe(Gender.Male),
+            new Monkey(Gender.Male),
+            new Monkey(Gender.Female),
+            new Monkey(Gender.Female),
+            new Bear(Gender.Male),
+            new Monkey(Gender.Female),
+            new Monkey(Gender.Male),
+            new Monkey(Gender.Female),
+            new Monkey(Gender.Male),
+            new Bear(Gender.Female)
+         };
+
+         bool isWork = true;
+         
+         Zoo zoo = new Zoo(animals);
+
+         zoo.DistributeAnimals();
+
+         while (isWork)
+         {
+            zoo.ShowCages();
+
+            var input = ReadInteger("\nВыберите номер вольерa: ");
+
+            if (input == "exit")
+            {
+               isWork = false;
+            }
+            else
+            {
+               zoo.SelectCage(ReadValue(input));
+               Console.ReadKey();
+            }
+
+            Console.Clear();
+         }
+
+         int ReadValue(string readNumber)
+         {
+            int.TryParse(readNumber, out int number);
+
+            return number;
+         }
+
+         string ReadInteger(string message)
+         {
+            Console.Write(message);
+            return Console.ReadLine();
+         }
+      }
+
+      class Zoo
+      {
+         private List<Cage> _cages = new List<Cage>();
+         private List<Animal> _animals = new List<Animal>();
+
+         public Zoo(List<Animal> animals)
+         {
+            _animals = animals;
+         }
+
+         public void DistributeAnimals()
+         {
+            for (int i = 0; i < _animals.Count; i++)
+            {
+               var aviary = _cages.Find(a => a.Name.Contains(_animals[i].Name));
+
+               if (aviary != null)
+               {
+                  aviary.AddAnimal(_animals[i]);
+                  _animals.RemoveAt(i);
+                  i--;
+               }
+               else
+               {
+                  _cages.Add(new Cage(_animals[i].Name));
+                  i--;
+               }
+            }
+         }
+
+         public void ShowCages()
+         {
+            int count = 0;
+            foreach (var cage in _cages)
+            {
+               Console.WriteLine("Вольер № " + (++count) + " " + cage.Name);
+            }
+         }
+
+         public void SelectCage(int index)
+         {
+            if (index > 0 && index <= _cages.Count)
+            {
+               Console.WriteLine($"Вольер номер {index}");
+               ShowAnimals(index);
+            }
+            else
+            {
+               Console.WriteLine("Ошибка! Нет вольера с таким номером\nНажмите любую клавишу, чтобы продолжить");
+            }
+         }
+
+         private void ShowAnimals(int index)
+         {
+            _cages[--index].GetAnimals().ForEach(Console.WriteLine);
+         }
+      }
+
+      class Cage
+      {
+         public string Name { get; private set; }
+
+         private List<Animal> _animals;
+
+         public Cage(string name)
+         {
+            Name = name;
+            _animals = new List<Animal>();
+         }
+
+         public void AddAnimal(Animal animal)
+         {
+            _animals.Add(animal);
+         }
+
+         public List<Animal> GetAnimals()
+         {
+            return _animals;
+         }
+      }
+
+      abstract class Animal
+      {
+         private Gender Gender;
+         protected string Sound;
+
+         public string Name { get; protected set; }
+
+         public Animal(Gender gender)
+         {
+            Gender = gender;
+         }
+
+         public override string ToString()
+         {
+            return $"{Name}, пол: {(Gender == Gender.Male ? "м" : "ж")}, звук: {Sound}";
+         }
+      }
+
+      class Tiger : Animal
+      {
+         public Tiger(Gender gender) : base(gender)
+         {
+            Name = "Тигр";
+            Sound = "Ррррр";
+         }
+      }
+
+      class Giraffe : Animal
+      {
+         public Giraffe(Gender gender) : base(gender)
+         {
+            Name = "Жираф";
+            Sound = "ууу";
+         }
+      }
+
+      class Monkey : Animal
+      {
+         public Monkey(Gender gender) : base(gender)
+         {
+            Name = "Обезъяна";
+            Sound = "Уаау";
+         }
+      }
+
+      class Bear : Animal
+      {
+         public Bear(Gender gender) : base(gender)
+         {
+            Name = "Медведь";
+            Sound = "рык";
+         }
+      }
+
+      enum Gender
+      {
+         Male,
+         Female
+      }
+   }
+}
