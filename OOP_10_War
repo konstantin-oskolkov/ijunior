@@ -16,7 +16,7 @@ class Program
          platoon2.CreateSolders(countSolders, minHelth, maxHelth, minDamage, maxDamage);
 
          battle.Fight();
-         battle.Winner();
+         battle.ShowWinner();
       }
    }
 
@@ -40,7 +40,7 @@ class Program
          }
       }
 
-      public void Winner()
+      public void ShowWinner()
       {
          if (_platoon1.IsAlive)
          {
