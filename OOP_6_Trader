@@ -1,0 +1,262 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         bool isWork = true;
+
+         var bread = new Item("Хлеб", 25);
+         var water = new Item("Бутылка воды 0,5 л.", 21);
+         var sword = new Item("Меч (медный)", 550);
+         var shield = new Item("Щит (кожанный)", 350);
+         var fish = new Item("Рыба", 25);
+         var ring = new Item("Кольцо Саурона", 15000);
+         var apple = new Item("Яблоко", 15);
+         var vine = new Item("Бутылка вина 0,7 л.", 250);
+         var armor = new Item("Броня (серебряная)", 2250);
+
+         Dictionary<Item, int> playerItems = new Dictionary<Item, int>
+            {
+                { bread, 15 },
+                { apple, 7 },
+                { sword, 1 },
+                { shield, 1 }
+            };
+
+         Dictionary<Item, int> dealerItems = new Dictionary<Item, int>
+            {
+                { bread, 20 },
+                { armor, 7 },
+                { water, 20 },
+                { sword, 3 },
+                { shield, 2 },
+                { fish, 15 },
+                { ring, 1 },
+                { apple, 17 },
+                { vine, 10 }
+            };
+
+         Unit player = new Player("Игрок", playerItems, 2500);
+         Unit trader = new Trader("Торговец", dealerItems, 3000);
+
+         Shop shop = new Shop(player, trader);
+
+         while (isWork)
+         {
+            Console.WriteLine("Игрок (монет: " + player.Money + "):");
+            player.ShowItem();
+
+            Console.WriteLine("\nТорговец (монет: " + trader.Money + "):");
+            trader.ShowItem();
+
+            switch (ReadInteger("\nВведите номер команды:\n 1 - купить товар\n 2 - продать товар\n 3 - выход\n № - "))
+            {
+               case "1":
+                  Trade(shop, player, trader);
+                  break;
+
+               case "2":
+                  Trade(shop, trader, player);
+                  break;
+
+               case "3":
+                  isWork = false;
+                  break;
+
+               default:
+                  Console.WriteLine("Неверная команда !!!");
+                  Console.ReadKey();
+                  break;
+            }
+            Console.Clear();
+         }
+      }
+
+      static string ReadInteger(string message)
+      {
+         Console.Write(message);
+         return Console.ReadLine();
+      }
+
+      static void SelectItem(out int number, out int amount)
+      {
+         number = Convert.ToInt32(ReadInteger("Выберите товар: "));
+         amount = Convert.ToInt32(ReadInteger("Укажите количество товара: "));
+      }
+
+      static void Trade(Shop shop, Unit buyer, Unit seller)
+      {
+         SelectItem(out int number, out int amount);
+         shop.SpendDeal(buyer, seller, number, amount);
+      }
+   }
+   
+   public class Shop
+   {
+      private Unit _player;
+      private Unit _trader;
+      private Item _product;
+
+      public Shop(Unit player, Unit trader)
+      {
+         _player = player;
+         _trader = trader;
+      }
+
+      public void SpendDeal(Unit buyer, Unit seller, int number, int amount)
+      {
+         _product = seller.GetItemByNumber(number);
+
+         if (_product != null)
+         {
+            var canSell = seller.CheckAmount(_product, amount);
+            var canBuy = CheckMoneyToPay(buyer, _product, amount);
+
+            if (canBuy && canSell)
+            {
+               buyer.AddItem(seller.RemoveItem(_product, amount), amount);
+               seller.GetMoney(buyer.GiveMoney(_product.Price * amount));
+            }
+            else
+            {
+               if (canSell == false)
+               {
+                  Console.WriteLine("Продавец не может продать столько товара");
+               }
+               if (canBuy == false)
+               {
+                  Console.WriteLine("Недостаточно средств");
+               }
+               Console.ReadKey();
+            }
+         }
+         else
+         {
+            Console.WriteLine("Товара нет в списке");
+            Console.ReadKey();
+         }
+      }
+
+      public bool CheckMoneyToPay(Unit buyer, Item product, int count) => buyer.Money >= product.Price * count;
+   }
+   
+   public class Player : Unit
+   {
+      public Player(string name, Dictionary<Item, int> inventory, int money) : base(name, inventory, money)
+      {
+         Name = name;
+         Money = money;
+         _inventory = new Dictionary<Item, int>(inventory);
+      }
+   }
+   
+  public class Trader : Unit
+   {
+      public Trader(string name, Dictionary<Item, int> inventory, int money) : base(name, inventory, money)
+      {
+         Name = name;
+         Money = money;
+         _inventory = inventory;
+      }
+   }
+   
+   public abstract class Unit
+   {
+      protected Dictionary<Item, int> _inventory = new Dictionary<Item, int>();
+
+      public string Name { get; protected set; }
+      public int Money { get; protected set; }
+
+      public Unit(string name, Dictionary<Item, int> inventory, int money)
+      {
+         Name = name;
+         Money = money;
+         _inventory = inventory;
+      }
+
+      public virtual void AddItem(Item item, int amount)
+      {
+         if (_inventory.ContainsKey(item))
+         {
+            _inventory[item] += amount;
+         }
+         else
+         {
+            _inventory[item] = amount;
+         }
+      }
+
+      public virtual Item RemoveItem(Item item, int amount)
+      {
+         if (_inventory.ContainsKey(item))
+         {
+            _inventory[item] -= amount;
+
+            if (_inventory[item] == 0)
+            {
+               _inventory.Remove(item);
+            }
+            return item;
+         }
+         return null;
+      }
+
+      public virtual int GiveMoney(int moneyToPay)
+      {
+         Money -= moneyToPay;
+         return moneyToPay;
+      }
+
+      public virtual void GetMoney(int money)
+      {
+         Money += money;
+      }
+
+      public virtual Item GetItemByNumber(int number)
+      {
+         int i = 0;
+         foreach (var item in _inventory)
+         {
+            if (++i == number)
+            {
+               return item.Key;
+            }
+         }
+         return null;
+      }
+
+      public virtual bool CheckAmount(Item item, int amount)
+      {
+         int countItems = _inventory[item];
+
+         if (countItems >= amount)
+         {
+            return true;
+         }
+         return false;
+      }
+
+      public virtual void ShowItem()
+      {
+         int i = 0;
+
+         foreach (var item in _inventory)
+         {
+            Console.WriteLine($"№ {++i} | {item.Key} количество: {item.Value}");
+         }
+      }
+   }
+   
+  public class Item
+   {
+      public string Name { get; private set; }
+      public int Price { get; private set; }
+
+      public Item(string name, int price)
+      {
+         Name = name;
+         Price = price;
+      }
+
+      public override string ToString() => Name + " цена: " + Price + " $";
+   }
+} 
