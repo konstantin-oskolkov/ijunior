@@ -1,44 +1,35 @@
-class Program
+internal class Program
    {
       static void Main(string[] args)
       {
          bool isWork = true;
 
-         var bread = new Item("Хлеб", 25);
-         var water = new Item("Бутылка воды 0,5 л.", 21);
-         var sword = new Item("Меч (медный)", 550);
-         var shield = new Item("Щит (кожанный)", 350);
-         var fish = new Item("Рыба", 25);
-         var ring = new Item("Кольцо Саурона", 15000);
-         var apple = new Item("Яблоко", 15);
-         var vine = new Item("Бутылка вина 0,7 л.", 250);
-         var armor = new Item("Броня (серебряная)", 2250);
+         var playerItems = new List<Item>
+         {
+            new Item("Хлеб", 25, 4),
+         new Item("Бутылка воды 0,5 л.", 21, 3),
+         new Item("Меч (медный)", 550, 1),
+         new Item("Щит (кожанный)", 350, 1),
+         new Item("Яблоко", 15, 5),
+         };
 
-         Dictionary<Item, int> playerItems = new Dictionary<Item, int>
-            {
-                { bread, 15 },
-                { apple, 7 },
-                { sword, 1 },
-                { shield, 1 }
-            };
-
-         Dictionary<Item, int> dealerItems = new Dictionary<Item, int>
-            {
-                { bread, 20 },
-                { armor, 7 },
-                { water, 20 },
-                { sword, 3 },
-                { shield, 2 },
-                { fish, 15 },
-                { ring, 1 },
-                { apple, 17 },
-                { vine, 10 }
-            };
+         var dealerItems = new List<Item>
+         {
+            new Item("Хлеб", 25, 15),
+         new Item("Бутылка воды 0,5 л.", 21, 15),
+         new Item("Меч (медный)", 550, 2),
+         new Item("Щит (кожанный)", 350, 1),
+         new Item("Рыба", 25, 25),
+         new Item("Кольцо Саурона", 15000, 1),
+         new Item("Яблоко", 15, 40),
+         new Item("Бутылка вина 0,7 л.", 250, 65),
+         new Item("Броня (серебряная)", 2250, 2)
+         };
 
          Unit player = new Player("Игрок", playerItems, 2500);
          Unit trader = new Trader("Торговец", dealerItems, 3000);
 
-         Shop shop = new Shop(player, trader);
+         Shop shop = new Shop();
 
          while (isWork)
          {
@@ -48,7 +39,7 @@ class Program
             Console.WriteLine("\nТорговец (монет: " + trader.Money + "):");
             trader.ShowItem();
 
-            switch (ReadInteger("\nВведите номер команды:\n 1 - купить товар\n 2 - продать товар\n 3 - выход\n № - "))
+            switch (ReadInput("\nВведите номер команды:\n 1 - купить товар\n 2 - продать товар\n 3 - выход\n № - "))
             {
                case "1":
                   Trade(shop, player, trader);
@@ -71,7 +62,7 @@ class Program
          }
       }
 
-      static string ReadInteger(string message)
+      static string ReadInput(string message)
       {
          Console.Write(message);
          return Console.ReadLine();
@@ -79,8 +70,8 @@ class Program
 
       static void SelectItem(out int number, out int amount)
       {
-         number = Convert.ToInt32(ReadInteger("Выберите товар: "));
-         amount = Convert.ToInt32(ReadInteger("Укажите количество товара: "));
+         number = Convert.ToInt32(ReadInput("Выберите товар: "));
+         amount = Convert.ToInt32(ReadInput("Укажите количество товара: "));
       }
 
       static void Trade(Shop shop, Unit buyer, Unit seller)
@@ -90,21 +81,13 @@ class Program
       }
    }
    
-   public class Shop
+  public class Shop
    {
-      private Unit _player;
-      private Unit _trader;
       private Item _product;
-
-      public Shop(Unit player, Unit trader)
-      {
-         _player = player;
-         _trader = trader;
-      }
 
       public void SpendDeal(Unit buyer, Unit seller, int number, int amount)
       {
-         _product = seller.GetItemByNumber(number);
+         _product = seller.GetItemByIndex(number);
 
          if (_product != null)
          {
@@ -113,7 +96,8 @@ class Program
 
             if (canBuy && canSell)
             {
-               buyer.AddItem(seller.RemoveItem(_product, amount), amount);
+               seller.RemoveItem(_product, amount);
+               buyer.AddItem(_product, amount);
                seller.GetMoney(buyer.GiveMoney(_product.Price * amount));
             }
             else
@@ -136,22 +120,22 @@ class Program
          }
       }
 
-      public bool CheckMoneyToPay(Unit buyer, Item product, int count) => buyer.Money >= product.Price * count;
+      public bool CheckMoneyToPay(Unit buyer, Item product, int amount) => buyer.Money >= product.Price * amount;
    }
    
-   public class Player : Unit
+  public class Player : Unit
    {
-      public Player(string name, Dictionary<Item, int> inventory, int money) : base(name, inventory, money)
+      public Player(string name, List<Item> inventory, int money) : base(name, inventory, money)
       {
          Name = name;
          Money = money;
-         _inventory = new Dictionary<Item, int>(inventory);
+         _inventory = inventory;
       }
    }
    
-  public class Trader : Unit
+   public class Trader : Unit
    {
-      public Trader(string name, Dictionary<Item, int> inventory, int money) : base(name, inventory, money)
+      public Trader(string name, List<Item> inventory, int money) : base(name, inventory, money)
       {
          Name = name;
          Money = money;
@@ -161,12 +145,12 @@ class Program
    
    public abstract class Unit
    {
-      protected Dictionary<Item, int> _inventory = new Dictionary<Item, int>();
+      protected List<Item> _inventory = new List<Item>();
 
       public string Name { get; protected set; }
       public int Money { get; protected set; }
 
-      public Unit(string name, Dictionary<Item, int> inventory, int money)
+      public Unit(string name, List<Item> inventory, int money)
       {
          Name = name;
          Money = money;
@@ -175,29 +159,29 @@ class Program
 
       public virtual void AddItem(Item item, int amount)
       {
-         if (_inventory.ContainsKey(item))
+         int index = GetIndex(item);
+
+         if (index < 0)
          {
-            _inventory[item] += amount;
+            item.ChangeCount(amount);
+            _inventory.Add(item);
          }
          else
          {
-            _inventory[item] = amount;
+            _inventory[index].ChangeCount(_inventory[index].Count + amount);
          }
       }
 
-      public virtual Item RemoveItem(Item item, int amount)
+      public virtual void RemoveItem(Item item, int amount)
       {
-         if (_inventory.ContainsKey(item))
-         {
-            _inventory[item] -= amount;
+         int index = GetIndex(item);
 
-            if (_inventory[item] == 0)
-            {
-               _inventory.Remove(item);
-            }
-            return item;
+         _inventory[index].ChangeCount(_inventory[index].Count - amount);
+
+         if (_inventory[index].Count == 0)
+         {
+            _inventory.Remove(item);
          }
-         return null;
       }
 
       public virtual int GiveMoney(int moneyToPay)
@@ -211,24 +195,29 @@ class Program
          Money += money;
       }
 
-      public virtual Item GetItemByNumber(int number)
+      public virtual Item GetItemByIndex(int number)
       {
-         int i = 0;
-         foreach (var item in _inventory)
+         if (_inventory.Count >= number && number > 0)
          {
-            if (++i == number)
-            {
-               return item.Key;
-            }
+            return _inventory[--number];
          }
-         return null;
+         else
+         {
+            return null;
+         }
       }
 
-      public virtual bool CheckAmount(Item item, int amount)
+      public int GetIndex(Item item)
       {
-         int countItems = _inventory[item];
+         int index;
+         return index = _inventory.FindIndex(x => x.Name == item.Name);
+      }
 
-         if (countItems >= amount)
+      public virtual bool CheckAmount(Item item, int count)
+      {
+         int index = GetIndex(item);
+
+         if (_inventory[index].Count >= count)
          {
             return true;
          }
@@ -237,26 +226,29 @@ class Program
 
       public virtual void ShowItem()
       {
-         int i = 0;
-
-         foreach (var item in _inventory)
-         {
-            Console.WriteLine($"№ {++i} | {item.Key} количество: {item.Value}");
-         }
+         int number = 0;
+         _inventory.ForEach(item => Console.WriteLine($"№ {++number} | {item}"));
       }
    }
    
-  public class Item
+   public class Item
    {
       public string Name { get; private set; }
       public int Price { get; private set; }
+      public int Count { get; private set; }
 
-      public Item(string name, int price)
+      public Item(string name, int price, int count)
       {
          Name = name;
          Price = price;
+         Count = count;
       }
 
-      public override string ToString() => Name + " цена: " + Price + " $";
+      public void ChangeCount(int value)
+      {
+         Count = value;
+      }
+
+      public override string ToString() => Name + " цена: " + Price + " $ " + "количество - " + Count;
    }
-} 
+ }
