@@ -39,14 +39,17 @@ internal class Program
             Console.WriteLine("\nТорговец (монет: " + trader.Money + "):");
             trader.ShowItem();
 
-            switch (ReadInput("\nВведите номер команды:\n 1 - купить товар\n 2 - продать товар\n 3 - выход\n № - "))
+            Console.Write("\nВведите номер команды:\n 1 - купить товар\n 2 - продать товар\n 3 - выход\n № - ");
+            string message = Console.ReadLine();
+
+            switch (message)
             {
                case "1":
-                  Trade(shop, player, trader);
+                  shop.Trade(player, trader);
                   break;
 
                case "2":
-                  Trade(shop, trader, player);
+                  shop.Trade(trader, player);
                   break;
 
                case "3":
@@ -61,31 +64,26 @@ internal class Program
             Console.Clear();
          }
       }
-
-      static string ReadInput(string message)
-      {
-         Console.Write(message);
-         return Console.ReadLine();
-      }
-
-      static void SelectItem(out int number, out int amount)
-      {
-         number = Convert.ToInt32(ReadInput("Выберите товар: "));
-         amount = Convert.ToInt32(ReadInput("Укажите количество товара: "));
-      }
-
-      static void Trade(Shop shop, Unit buyer, Unit seller)
-      {
-         SelectItem(out int number, out int amount);
-         shop.SpendDeal(buyer, seller, number, amount);
-      }
    }
    
-  public class Shop
+    public class Shop
    {
       private Item _product;
 
-      public void SpendDeal(Unit buyer, Unit seller, int number, int amount)
+      public void Trade(Unit buyer, Unit seller)
+      {
+         if (SelectItem(out int number, out int count))
+         {
+            SpendDeal(buyer, seller, number, count);
+         }
+         else
+         {
+            Console.WriteLine("Неверные данные !!!");
+            Console.ReadKey();
+         }
+      }
+
+      private void SpendDeal(Unit buyer, Unit seller, int number, int amount)
       {
          _product = seller.GetItemByIndex(number);
 
@@ -98,7 +96,7 @@ internal class Program
             {
                seller.RemoveItem(_product, amount);
                buyer.AddItem(_product, amount);
-               seller.GetMoney(buyer.GiveMoney(_product.Price * amount));
+               seller.TakeMoney(buyer.GiveMoney(_product.Price * amount));
             }
             else
             {
@@ -120,7 +118,25 @@ internal class Program
          }
       }
 
-      public bool CheckMoneyToPay(Unit buyer, Item product, int amount) => buyer.Money >= product.Price * amount;
+      private bool CheckMoneyToPay(Unit buyer, Item product, int amount) => buyer.Money >= product.Price * amount;
+
+      private bool SelectItem(out int number, out int count)
+      {
+         Console.Write("Выберите товар: ");
+         bool isNumberItem = int.TryParse(Console.ReadLine(), out number);
+
+         Console.Write("Укажите количество товара: ");
+         bool isCount = int.TryParse(Console.ReadLine(), out count);
+
+         if (isNumberItem && isCount)
+         {
+            return true;
+         }
+         else
+         {
+            return false;
+         }
+      }
    }
    
   public class Player : Unit
@@ -132,8 +148,8 @@ internal class Program
          _inventory = inventory;
       }
    }
-   
-   public class Trader : Unit
+  
+  public class Trader : Unit
    {
       public Trader(string name, List<Item> inventory, int money) : base(name, inventory, money)
       {
@@ -190,7 +206,7 @@ internal class Program
          return moneyToPay;
       }
 
-      public virtual void GetMoney(int money)
+      public virtual void TakeMoney(int money)
       {
          Money += money;
       }
@@ -231,7 +247,7 @@ internal class Program
       }
    }
    
-   public class Item
+  public class Item
    {
       public string Name { get; private set; }
       public int Price { get; private set; }
@@ -251,4 +267,4 @@ internal class Program
 
       public override string ToString() => Name + " цена: " + Price + " $ " + "количество - " + Count;
    }
- }
+}
