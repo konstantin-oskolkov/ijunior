@@ -104,7 +104,7 @@ class Program
    
 abstract class Fighter
    {
-      protected Random _randomSelect = new Random();
+      protected Random RandomSelect = new Random();
       protected Classes Classes;
 
       public string Name { get; protected set; }
@@ -163,7 +163,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 6;
          int chanceAbility = 3;
-         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
 
          Health += _heal;
          Armore = _tempArmore;
@@ -203,7 +203,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 5;
          int chanceAbility = 2;
-         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
 
          Damage = _tempDamage;
 
@@ -240,7 +240,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 4;
          int chanceAbility = 1;
-         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
 
          if (Health > 0)
          {
@@ -278,7 +278,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 7;
          int chanceAbility = 3;
-         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
 
          Health += _heal;
          Damage = _tempDamage;
@@ -318,7 +318,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 6;
          int chanceAbility = 3;
-         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
 
          Damage = _tempDamage;
 
