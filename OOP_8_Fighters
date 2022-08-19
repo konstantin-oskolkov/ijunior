@@ -104,7 +104,7 @@ class Program
    
 abstract class Fighter
    {
-      public Random RandomSelect = new Random();
+      protected Random _randomSelect = new Random();
       protected Classes Classes;
 
       public string Name { get; protected set; }
@@ -163,7 +163,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 6;
          int chanceAbility = 3;
-         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
 
          Health += _heal;
          Armore = _tempArmore;
@@ -184,7 +184,7 @@ abstract class Fighter
       public override void UseSkill()
       {
          Armore += _powerArmore;
-         Console.WriteLine("Knight Armore + 20");
+         Console.WriteLine("Knight Armore " + Armore);
       }
    }
    
@@ -203,7 +203,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 5;
          int chanceAbility = 2;
-         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
 
          Damage = _tempDamage;
 
@@ -223,7 +223,7 @@ abstract class Fighter
       public override void UseSkill()
       {
          Damage *= _powerDamage;
-         Console.WriteLine("Rogue DAMAGE " + Damage);
+         Console.WriteLine("Rogue Damage " + Damage);
       }
    }
    
@@ -240,7 +240,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 4;
          int chanceAbility = 1;
-         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
 
          if (Health > 0)
          {
@@ -257,7 +257,7 @@ abstract class Fighter
       public override void UseSkill()
       {
          Health += _heal;
-         Console.WriteLine("Wizard HEAL " + _heal);
+         Console.WriteLine("Wizard Heal " + _heal);
       }
    }
    
@@ -278,7 +278,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 7;
          int chanceAbility = 3;
-         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
 
          Health += _heal;
          Damage = _tempDamage;
@@ -318,7 +318,7 @@ abstract class Fighter
       {
          int rangeMaxlNumber = 6;
          int chanceAbility = 3;
-         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+         var chanceUse = _randomSelect.Next(rangeMaxlNumber);
 
          Damage = _tempDamage;
 
@@ -338,7 +338,7 @@ abstract class Fighter
       public override void UseSkill()
       {
          Damage += _powerDamage;
-         Console.WriteLine("Archer DAMAGE " + Damage);
+         Console.WriteLine("Archer Damage " + Damage);
       }
    }
   
