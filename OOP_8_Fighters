@@ -1,0 +1,352 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         List<Fighter> fighters = new List<Fighter>{
+          new Wizard("Маг", 280, 30, 3),
+          new Knight("Рыцарь", 300, 30, 12),
+          new Warrior("Воин", 360, 25, 7),
+          new Rogue("Жулик", 260, 35, 4),
+          new Archer("Лучник", 270, 35, 5)
+      };
+
+         Arena arena = new Arena(fighters);
+
+         arena.ChooseFighter(out Fighter fighter1);
+         arena.ChooseFighter(out Fighter fighter2);
+
+         if (fighter1 != null && fighter2 != null)
+         {
+            arena.Fight(fighter1, fighter2);
+         }
+
+      }
+   }
+   
+   class Arena
+   {
+      private List<Fighter> _fighters;
+
+      public Arena(List<Fighter> fighters)
+      {
+         _fighters = fighters;
+      }
+
+      public void ChooseFighter(out Fighter fighter)
+      {
+         ShowFighters();
+
+         Console.Write("\n Введите номер бойца: ");
+         bool isNumber = int.TryParse(Console.ReadLine(), out int inputID);
+
+         if (isNumber == false)
+         {
+            Console.WriteLine("Ошибка! Вы ввели некоректные данные.");
+            fighter = null;
+         }
+         else if (inputID > 0 && inputID <= _fighters.Count)
+         {
+            fighter = _fighters[--inputID];
+            _fighters.Remove(fighter);
+            Console.WriteLine("Боец успешно выбран.");
+         }
+         else
+         {
+            Console.WriteLine("Боец с таким номером отсутствует.");
+            fighter = null;
+         }
+
+         Console.ReadKey();
+         Console.Clear();
+      }
+
+      public void Fight(Fighter fighter1, Fighter fighter2)
+      {
+         while (fighter1.Health > 0 && fighter2.Health > 0)
+         {
+            Console.WriteLine(fighter1.ToString());
+            Console.WriteLine(fighter2.ToString());
+
+            fighter1.TakeDamege(fighter2.SelectAction());
+            fighter2.TakeDamege(fighter1.SelectAction());
+
+            Console.ReadKey();
+            Console.Clear();
+         }
+
+         ShowWinner(fighter1, fighter2);
+      }
+
+      private void ShowWinner(Fighter fighter1, Fighter fighter2)
+      {
+         if (fighter1.Health > 0)
+         {
+            Console.WriteLine($"Победитель сражения: {fighter1.Name}");
+         }
+         else if (fighter2.Health > 0)
+         {
+            Console.WriteLine($"Победитель сражения: {fighter2.Name}");
+         }
+         else
+         {
+            Console.WriteLine("В битве ничья");
+         }
+      }
+
+      private void ShowFighters()
+      {
+         int number = 1;
+
+         Console.WriteLine("Список доступный бойцов");
+         _fighters.ForEach(fighter => Console.WriteLine($"{number++}" + fighter));
+      }
+   }
+   
+abstract class Fighter
+   {
+      public Random RandomSelect = new Random();
+      protected Classes Classes;
+
+      public string Name { get; protected set; }
+      public int Health { get; protected set; }
+      public int Damage { get; protected set; }
+      public int Armore { get; protected set; }
+
+      public Fighter(Classes classes, string name, int health, int damage, int armore)
+      {
+         Classes = classes;
+         Name = name;
+         Health = health;
+         Damage = damage;
+         Armore = armore;
+      }
+
+      public abstract int SelectAction();
+
+      public abstract void UseSkill();
+
+      public virtual int Attack()
+      {
+         return Damage;
+      }
+
+      public virtual void TakeDamege(int damage)
+      {
+         int finaleDamage = damage - Armore;
+
+         if (finaleDamage > 0)
+         {
+            Health -= finaleDamage;
+         }
+      }
+
+      public override string ToString()
+      {
+         return $" {Name}: ({Classes}) - |Здоровье: {Health}| Броня: {Armore} | Урон: {Damage}";
+      }
+   }
+   
+   class Knight : Fighter
+   {
+      private int _powerArmore;
+      private int _tempArmore;
+      private int _heal;
+
+      public Knight(string name, int health, int damage, int armore) : base(Classes.Knight, name, health, damage, armore)
+      {
+         _powerArmore = 20;
+         _tempArmore = Armore;
+         _heal = 4;
+      }
+
+      public override int SelectAction()
+      {
+         int rangeMaxlNumber = 6;
+         int chanceAbility = 3;
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+
+         Health += _heal;
+         Armore = _tempArmore;
+
+         if (Health > 0)
+         {
+            if (chanceUse == chanceAbility)
+            {
+               UseSkill();
+            }
+
+            return Attack();
+         }
+
+         return default;
+      }
+
+      public override void UseSkill()
+      {
+         Armore += _powerArmore;
+         Console.WriteLine("Knight Armore + 20");
+      }
+   }
+   
+   class Rogue : Fighter
+   {
+      private int _powerDamage;
+      private int _tempDamage;
+
+      public Rogue(string name, int health, int damage, int armore) : base(Classes.Rogue, name, health, damage, armore)
+      {
+         _powerDamage = 4;
+         _tempDamage = Damage;
+      }
+
+      public override int SelectAction()
+      {
+         int rangeMaxlNumber = 5;
+         int chanceAbility = 2;
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+
+         Damage = _tempDamage;
+
+         if (Health > 0)
+         {
+            if (chanceUse == chanceAbility)
+            {
+               UseSkill();
+            }
+
+            return Attack();
+         }
+
+         return default;
+      }
+
+      public override void UseSkill()
+      {
+         Damage *= _powerDamage;
+         Console.WriteLine("Rogue DAMAGE " + Damage);
+      }
+   }
+   
+  class Wizard : Fighter
+   {
+      private int _heal;
+
+      public Wizard(string name, int health, int damage, int armore) : base(Classes.Wizard, name, health, damage, armore)
+      {
+         _heal = 60;
+      }
+
+      public override int SelectAction()
+      {
+         int rangeMaxlNumber = 4;
+         int chanceAbility = 1;
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+
+         if (Health > 0)
+         {
+            if (chanceUse == chanceAbility)
+            {
+               UseSkill();
+            }
+
+            return Attack();
+         }
+         return default;
+      }
+
+      public override void UseSkill()
+      {
+         Health += _heal;
+         Console.WriteLine("Wizard HEAL " + _heal);
+      }
+   }
+   
+ class Warrior : Fighter
+   {
+      private int _powerDamage;
+      private int _tempDamage;
+      private int _heal;
+
+      public Warrior(string name, int health, int damage, int armore) : base(Classes.Warrior, name, health, damage, armore)
+      {
+         _powerDamage = 40;
+         _tempDamage = Damage;
+         _heal = 5;
+      }
+
+      public override int SelectAction()
+      {
+         int rangeMaxlNumber = 7;
+         int chanceAbility = 3;
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+
+         Health += _heal;
+         Damage = _tempDamage;
+
+         if (Health > 0)
+         {
+            if (chanceUse == chanceAbility)
+            {
+               UseSkill();
+            }
+
+            return Attack();
+         }
+
+         return default;
+      }
+
+      public override void UseSkill()
+      {
+         Damage += _powerDamage;
+         Console.WriteLine("Warrior Damage " + Damage);
+      }
+   }
+   
+  class Archer : Fighter
+   {
+      private int _powerDamage;
+      private int _tempDamage;
+
+      public Archer(string name, int health, int damage, int armore) : base(Classes.Archer, name, health, damage, armore)
+      {
+         _powerDamage = 70;
+         _tempDamage = Damage;
+      }
+
+      public override int SelectAction()
+      {
+         int rangeMaxlNumber = 6;
+         int chanceAbility = 3;
+         var chanceUse = RandomSelect.Next(rangeMaxlNumber);
+
+         Damage = _tempDamage;
+
+         if (Health > 0)
+         {
+            if (chanceUse == chanceAbility)
+            {
+               UseSkill();
+            }
+
+            return Attack();
+         }
+
+         return default;
+      }
+
+      public override void UseSkill()
+      {
+         Damage += _powerDamage;
+         Console.WriteLine("Archer DAMAGE " + Damage);
+      }
+   }
+  
+   enum Classes
+   {
+      Archer = 0,
+      Wizard = 1,
+      Knight = 2,
+      Warrior = 3,
+      Rogue = 4
+   } 
