@@ -2,21 +2,31 @@ class Program
    {
       static void Main(string[] args)
       {
-         int moneyUnit = 50000;
          int moneyService = 120000;
-         int countClient = 10;
 
-         List<Part> parts = new List<Part>
-         {
-              new Part("двигатель", 12000, true),
-              new Part("коробка передач", 10000, false),
-              new Part("ремень грм", 1500, true)
-         };
+         AutoService autoService = new AutoService(moneyService);
 
-         List<Shelf> storage = new List<Shelf>
+         autoService.Work();
+      }
+   }
+
+public class AutoService
+   {
+      private int _penalty = 1500;
+      private List<Shelf> _storage;
+      private Dictionary<string, int> _jobPrice;
+      private Queue<Unit> _clients;
+
+      public int Money { get; private set; }
+
+      public AutoService(int money)
+      {
+         Money = money;
+
+         _storage = new List<Shelf>
          {
             new Shelf(new Part("коробка передач", 10000, false), 3),
-            new Shelf(new Part("двигатель", 12000, false), 1),
+            new Shelf(new Part("двигатель", 12000, false), 5),
             new Shelf(new Part("руль", 1000000, false), 20),
             new Shelf(new Part("передние тормозные колодки", 520, false), 150),
             new Shelf(new Part("ремень грм", 1500, false), 15),
@@ -25,7 +35,7 @@ class Program
             new Shelf(new Part("масляный фильтр", 250, false), 89)
          };
 
-         Dictionary<string, int> jobPrice = new Dictionary<string, int> 
+         _jobPrice = new Dictionary<string, int>
          {
             ["коробка передач"] = 7550,
             ["двигатель"] = 9850,
@@ -34,119 +44,118 @@ class Program
             ["ремень грм"] = 2500,
             ["генератор"] = 4200,
             ["подшипник"] = 800,
-            ["масляный фильтр"] = 950,
+            ["масляный фильтр"] = 950
          };
 
-         var Clients = CreateClients(parts, countClient, moneyUnit);
-
-         Service service = new Service(storage, jobPrice, moneyService);
-
-         while (Clients.Count > 0)
-         {
-            Console.WriteLine(Clients.Count);
-            service.ServiceCar(Clients.Dequeue());
-         }
+         _clients = FormQueue();
       }
 
-      static Queue<Unit> CreateClients(List<Part> parts, int count, int money)
+      private Queue<Unit> FormQueue()
       {
-         Queue<Unit> Clients = new Queue<Unit>();
+         int money = 50000;
+         int count = 10;
+
+         var clients = new Queue<Unit>();
 
          for (int i = 0; i < count; i++)
          {
-            Clients.Enqueue(new Unit(money, new Car(parts)));
+            clients.Enqueue(new Unit(money, new Car()));
          }
 
-         return Clients;
-      }
-   }
-   
-   public class Service
-   {
-      private int _penalty = 1500;
-      private List<Shelf> _storage = new List<Shelf>();
-      private Dictionary<string, int> _jobPrice = new Dictionary<string, int>();
-
-      public int Money { get; private set; }
-
-      public Service(List<Shelf> storage, Dictionary<string, int> jobPrice, int money)
-      {
-         Money = money;
-         _storage = storage;
-         _jobPrice = jobPrice;
+         return clients;
       }
 
-      public void ServiceCar(Unit client)
+      public void Work()
       {
-         bool isWork = true;
+         const string Repair = "1";
+         const string Complete = "2";
+         const string Refuse = "3";
 
-         while (isWork)
+         while (_clients.Count > 0)
          {
-            ShowMoney();
-            Console.Write("\nВыберите действие: \n1 - произвести ремонт \n2 - завершить работу с данной машиной \n3 - отказать клиенту \n№ - ");
+            bool isWork = true;
 
-            switch (Console.ReadLine())
+            Console.WriteLine(_clients.Count);
+            var client = _clients.Dequeue();
+
+            while (isWork)
             {
-               case "1":
-                  MakeRepair(client);
-                  break;
+               ShowMoney();
+               Console.Write("\nВыберите действие: \n1 - произвести ремонт \n2 - завершить работу с данной машиной \n3 - отказать клиенту \n№ - ");
 
-               case "2":
-                  isWork = IsRepaired(client);
-                  break;
+               switch (Console.ReadLine())
+               {
+                  case Repair:
+                     MakeRepair(client);
+                     break;
 
-               case "3":
-                  client.TakeMoney(ToPay(_penalty));
-                  Console.WriteLine("\nВы отказали клиенту и потеряли деньги");
-                  Console.ReadKey();
-                  isWork = false;
-                  break;
+                  case Complete:
+                     isWork = IsRepaired(client);
+                     break;
 
-               default:
-                  Console.WriteLine("\nНет такой команды");
-                  Console.ReadKey();
-                  break;
+                  case Refuse:
+                     isWork = IsPenalty(client);
+                     break;
+
+                  default:
+                     Console.WriteLine("\nНет такой команды");
+                     break;
+               }
+               Console.WriteLine("Для продолжения нажмите кнопку");
+               Console.ReadKey();
+               Console.Clear();
             }
-            Console.Clear();
          }
+      }
+
+      private bool IsPenalty(Unit client)
+      {
+         client.TakeMoney(Pay(_penalty));
+         Console.WriteLine("\nВы отказали клиенту и потеряли деньги");
+         return false;
       }
 
       private void MakeRepair(Unit unit)
       {
          unit.Car.ShowCarParts();
-         var brokenPart = unit.Car.RemovePart(ReadInteger("\nВыберите что заменить: "));
+
+         Console.Write("\nВыберите что заменить: ");
+         int.TryParse(Console.ReadLine(), out int number);
+
+         var brokenPart = unit.Car.RemovePart(number);
 
          ShowParts();
-         int numberShell = ReadInteger("\nВыберите запчасть со склада: ");
+
+         Console.Write("\nВыберите запчасть со склада: ");
+         int.TryParse(Console.ReadLine(), out int numberShell);
+         
          var part = RemovePart(numberShell);
 
          if (brokenPart == null || part == null)
          {
             Console.WriteLine("\nВы накосячили и потеряли деньги");
-            unit.TakeMoney(ToPay(_penalty));
-            Console.ReadKey();
+            unit.TakeMoney(Pay(_penalty));
             return;
          }
 
-         if (ReplacePart(brokenPart, part, unit.Car))
+         if (TryReplacePart(brokenPart, part, unit.Car))
          {
             int money = _jobPrice[part.Name] + part.Price;
-            TakeMoney(unit.ToPay(money));
+            TakeMoney(unit.Pay(money));
          }
          else
          {
             if (_storage.Exists(parts => parts.Part == part))
             {
-               _storage[numberShell].AddPart();
-               unit.TakeMoney(ToPay(part.Price + _jobPrice[part.Name]));
+               _storage[--numberShell].AddPart();
+               unit.TakeMoney(Pay(part.Price + _jobPrice[part.Name]));
             }
             else
             {
                _storage.Add(new Shelf(part, 1));
             }
 
-            Console.WriteLine("\nВы накосячили и потеряли деньги 2");
-            Console.ReadKey();
+            Console.WriteLine("\nВы накосячили и потеряли деньги");
          }
       }
 
@@ -155,18 +164,16 @@ class Program
          if (client.Car.IsBroken())
          {
             Console.WriteLine("Ремонт не закончен");
-            Console.ReadKey();
             return true;
          }
          else
          {
             Console.WriteLine("Все в норме, клиент уехал.");
-            Console.ReadKey();
             return false;
          }
       }
 
-      private bool ReplacePart(Part brokenPart, Part part, Car car)
+      private bool TryReplacePart(Part brokenPart, Part part, Car car)
       {
          if (brokenPart.IsBroken == true & brokenPart.Name == part.Name)
          {
@@ -178,23 +185,6 @@ class Program
             car.AddPart(brokenPart);
             return false;
          }
-      }
-
-      private int ReadInteger(string message)
-      {
-         int number = default;
-         bool isNumber = false;
-
-         while (isNumber == false)
-         {
-            Console.Write(message);
-
-            isNumber = int.TryParse(Console.ReadLine(), out number);
-
-            if (isNumber == false)
-               Console.WriteLine("\nВы ввели некорректные данные.");
-         }
-         return number;
       }
 
       private Part RemovePart(int index)
@@ -214,7 +204,7 @@ class Program
          return null;
       }
 
-      private int ToPay(int money)
+      private int Pay(int money)
       {
          Money -= money;
          return money;
@@ -241,7 +231,7 @@ class Program
       }
    }
    
-   public class Shelf
+ public class Shelf
    {
       public Part Part { get; private set; }
       public int Count { get; private set; }
@@ -269,15 +259,19 @@ class Program
       }
    }
    
-   public class Car
+  public class Car
    {
       private List<Part> _parts;
 
       public int Number { get; private set; }
 
-      public Car(List<Part> parts)
+      public Car()
       {
-         _parts = new List<Part>(parts);
+         _parts = new List<Part>{
+              new Part("двигатель", 12000, true),
+              new Part("коробка передач", 10000, false),
+              new Part("ремень грм", 1500, true)
+         };
       }
 
       public void AddPart(Part part)
@@ -329,7 +323,7 @@ class Program
          Money += money;
       }
 
-      public int ToPay(int money)
+      public int Pay(int money)
       {
          Money -= money;
          return money;
