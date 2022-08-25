@@ -1,0 +1,350 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         int moneyUnit = 50000;
+         int moneyService = 120000;
+         int countClient = 10;
+
+         List<Part> parts = new List<Part>
+         {
+              new Part("двигатель", 12000, true),
+              new Part("коробка передач", 10000, false),
+              new Part("ремень грм", 1500, true)
+         };
+
+         List<Shelf> Storage = new List<Shelf>
+         {
+            new Shelf(new Part("коробка передач", 10000, false), 3),
+            new Shelf(new Part("двигатель", 12000, false), 1),
+            new Shelf(new Part("руль", 1000000, false), 20),
+            new Shelf(new Part("передние тормозные колодки", 520, false), 150),
+            new Shelf(new Part("ремень грм", 1500, false), 15),
+            new Shelf(new Part("генератор", 7500, false), 6),
+            new Shelf(new Part("подшипник", 150, false), 215),
+            new Shelf(new Part("масляный фильтр", 250, false), 89)
+         };
+
+         Dictionary<string, int> JobPrice = new Dictionary<string, int> 
+         {
+            ["коробка передач"] = 7550,
+            ["двигатель"] = 9850,
+            ["руль"] = 500000,
+            ["передние тормозные колодки"] = 1500,
+            ["ремень грм"] = 2500,
+            ["генератор"] = 4200,
+            ["подшипник"] = 800,
+            ["масляный фильтр"] = 950,
+         };
+
+         var Clients = CreateClients(parts, countClient, moneyUnit);
+
+         Service service = new Service(Storage, JobPrice, moneyService);
+
+         while (Clients.Count > 0)
+         {
+            Console.WriteLine(Clients.Count);
+            service.ServiceCar(Clients.Dequeue());
+         }
+      }
+
+      static Queue<Unit> CreateClients(List<Part> parts, int count, int money)
+      {
+         Queue<Unit> Clients = new Queue<Unit>();
+
+         for (int i = 0; i < count; i++)
+         {
+            Clients.Enqueue(new Unit(money, new Car(parts)));
+         }
+
+         return Clients;
+      }
+   }
+   
+   public class Service
+   {
+      private int _penalty = 1500;
+      private List<Shelf> _storage = new List<Shelf>();
+      private Dictionary<string, int> _jobPrice = new Dictionary<string, int>();
+
+      public int Money { get; private set; }
+
+      public Service(List<Shelf> storage, Dictionary<string, int> jobPrice, int money)
+      {
+         Money = money;
+         _storage = storage;
+         _jobPrice = jobPrice;
+      }
+
+      public void ServiceCar(Unit client)
+      {
+         bool isWork = true;
+
+         while (isWork)
+         {
+            ShowMoney();
+
+            switch (ReadInteger("\nВыберите действие: \n1 - произвести ремонт \n2 - завершить работу с данной машиной \n3 - отказать клиенту \n№ - "))
+            {
+               case 1:
+                  MakeRepair(client);
+                  break;
+
+               case 2:
+                  isWork = CheckCar(client);
+                  break;
+
+               case 3:
+                  client.GetMoney(ToPay(_penalty));
+                  Console.WriteLine("\nВы отказали клиенту и потеряли деньги");
+                  Console.ReadKey();
+                  isWork = false;
+                  break;
+
+               default:
+                  Console.WriteLine("\nНет такой команды");
+                  Console.ReadKey();
+                  break;
+            }
+            Console.Clear();
+         }
+      }
+
+      private void MakeRepair(Unit unit)
+      {
+         unit.Car.ShowCarParts();
+         var brokenPart = unit.Car.RemovePart(ReadInteger("\nВыберите что заменить: "));
+
+         ShowParts();
+         int numberShell = ReadInteger("\nВыберите запчасть со склада: ");
+         var part = RemovePart(numberShell);
+
+         if (brokenPart == null || part == null)
+         {
+            Console.WriteLine("\nВы накосячили и потеряли деньги");
+            unit.GetMoney(ToPay(_penalty));
+            Console.ReadKey();
+            return;
+         }
+
+         if (ReplacePart(brokenPart, part, unit.Car))
+         {
+            int money = _jobPrice[part.Name];
+            TakeMoney(unit.ToPay(money));
+         }
+         else
+         {
+            if (_storage.Exists(parts => parts.Part == part))
+            {
+               _storage[numberShell].AddPart();
+               unit.GetMoney(ToPay(part.Price + _jobPrice[part.Name]));
+            }
+            else
+            {
+               _storage.Add(new Shelf(part, 1));
+            }
+
+            Console.WriteLine("\nВы накосячили и потеряли деньги");
+            Console.ReadKey();
+         }
+      }
+
+      private bool CheckCar(Unit client)
+      {
+         for (int i = 0; i < client.Car.Parts.Count; i++)
+         {
+            if (client.Car.Parts[i].IsBroken == true)
+            {
+               Console.WriteLine("Ремонт не закончен");
+               Console.ReadKey();
+               return true;
+            }
+         }
+
+         Console.WriteLine("Все в норме, клиент уехал.");
+         Console.ReadKey();
+         return false;
+      }
+
+      private bool ReplacePart(Part brokenPart, Part part, Car car)
+      {
+         if (brokenPart.IsBroken == true & brokenPart.Name == part.Name)
+         {
+            car.AddPart(part);
+            return true;
+         }
+         else
+         {
+            car.AddPart(brokenPart);
+            return false;
+         }
+      }
+
+      private int ReadInteger(string message)
+      {
+         int number = default;
+         bool isNumber = false;
+
+         while (isNumber == false)
+         {
+            Console.Write(message);
+
+            isNumber = int.TryParse(Console.ReadLine(), out number);
+
+            if (isNumber == false)
+               Console.WriteLine("\nВы ввели некорректные данные.");
+         }
+         return number;
+      }
+
+      private Part RemovePart(int index)
+      {
+         if (index >= 0 & index < _storage.Count)
+         {
+            var part = _storage[--index].GetPart();
+
+            if (_storage[index].Count == 0)
+            {
+               _storage.RemoveAt(index);
+            }
+
+            return part;
+         }
+
+         return null;
+      }
+
+      private int ToPay(int money)
+      {
+         Money -= money;
+         return money;
+      }
+
+      private void TakeMoney(int money)
+      {
+         Money += money;
+      }
+
+      private void ShowParts()
+      {
+         Console.WriteLine("\nЗапчасти на складе:");
+
+         for (int i = 0; i < _storage.Count; i++)
+         {
+            Console.WriteLine($"№ {i + 1} - {_storage[i]}");
+         }
+      }
+
+      private void ShowMoney()
+      {
+         Console.WriteLine($"Деньги автосервиса: {Money}");
+      }
+   }
+   
+  public class Shelf
+   {
+      public Part Part { get; private set; }
+      public int Count { get; private set; }
+
+      public Shelf(Part part, int count)
+      {
+         Part = part;
+         Count = count;
+      }
+
+      public void AddPart()
+      {
+         Count++;
+      }
+
+      public Part GetPart()
+      {
+         Count--;
+         return Part;
+      }
+
+      public override string ToString()
+      {
+         return $"{Part} | количество - {Count}";
+      }
+   }
+   
+   public class Car
+   {
+      public List<Part> Parts { get; private set; }
+      public int Number { get; private set; }
+
+      public Car(List<Part> parts)
+      {
+         Parts = new List<Part>(parts);
+      }
+
+      public void AddPart(Part part)
+      {
+         Parts.Add(part);
+      }
+
+      public Part RemovePart(int index)
+      {
+         if (index >= 0 & index < Parts.Count)
+         {
+            var part = Parts[index];
+            Parts.Remove(Parts[index]);
+            return part;
+         }
+
+         return null;
+      }
+
+      public void ShowCarParts()
+      {
+         Console.WriteLine("\nЭлементы машины:");
+
+         for (int i = 0; i < Parts.Count; i++)
+         {
+            Console.WriteLine($"№ {i+1} | {Parts[i].Name} | цена - {Parts[i].Price} | статус: {(Parts[i].IsBroken ? "сломана" : "в норме")}");
+         }
+      }
+   }
+   
+   public class Unit
+   {
+      public int Money { get; private set; }
+      public Car Car { get; private set; }
+
+      public Unit(int money, Car car)
+      {
+         Money = money;
+         Car = car;
+      }
+
+      public void GetMoney(int money)
+      {
+         Money += money;
+      }
+
+      public int ToPay(int money)
+      {
+         Money -= money;
+         return money;
+      }
+   }
+   
+   public class Part
+   {
+      public string Name { get; private set; }
+      public int Price { get; private set; }
+      public bool IsBroken { get; private set; }
+
+      public Part(string name, int price, bool isBroken)
+      {
+         Name = name;
+         Price = price;
+         IsBroken = isBroken;
+      }
+
+      public override string ToString()
+      {
+         return $"{Name} | цена - {Price} | статус: {(IsBroken ? "сломана" : "в норме")}";
+      }
+   }
