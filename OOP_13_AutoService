@@ -50,21 +50,6 @@ public class AutoService
          _clients = FormQueue();
       }
 
-      private Queue<Unit> FormQueue()
-      {
-         int money = 50000;
-         int count = 10;
-
-         var clients = new Queue<Unit>();
-
-         for (int i = 0; i < count; i++)
-         {
-            clients.Enqueue(new Unit(money, new Car()));
-         }
-
-         return clients;
-      }
-
       public void Work()
       {
          const string Repair = "1";
@@ -106,6 +91,21 @@ public class AutoService
                Console.Clear();
             }
          }
+      }
+
+      private Queue<Unit> FormQueue()
+      {
+         int money = 50000;
+         int count = 10;
+
+         var clients = new Queue<Unit>();
+
+         for (int i = 0; i < count; i++)
+         {
+            clients.Enqueue(new Unit(money, new Car()));
+         }
+
+         return clients;
       }
 
       private bool IsPenalty(Unit client)
