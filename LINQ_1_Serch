@@ -53,14 +53,14 @@ class Program
 
       private void ShowFind(IEnumerable<Criminal> criminals)
       {
-         if (criminals.Any() == false)
+        if (criminals.Any())
+         {
+            foreach (var criminal in criminals)
+               Console.WriteLine(criminal.GetDescription());
+         }
+         else
          {
             Console.WriteLine("Нет соответствий по вашим параметрам");
-         }
-
-         foreach (var criminal in criminals)
-         {
-            Console.WriteLine(criminal.GetDescription());
          }
       }
 
