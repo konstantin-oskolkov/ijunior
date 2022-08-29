@@ -33,10 +33,10 @@ class Program
          _weight = number.ReadInteger("Укажите вес: ");
          var nationality = GetNationality(number.ReadInteger("Укажите расу: "));
 
-         Serch(_height, _weight, nationality);
+         Search(_height, _weight, nationality);
       }
 
-      private void Serch(int height, int weight, Nationality nationality)
+      private void Search(int height, int weight, Nationality nationality)
       {
          var criminals = from Criminal criminal in _criminals
                          where criminal.IsArrested == false
@@ -108,7 +108,7 @@ class Program
    
    public static class MyExtensions
    {
-      public static int ReadInteger(this int str1, string message)
+      public static int ReadInteger(this int input, string message)
       {
          int number = default;
          bool isNumber = false;
