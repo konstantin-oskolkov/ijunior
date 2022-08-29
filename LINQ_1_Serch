@@ -11,7 +11,7 @@ class Program
   class Database
    {
       private int number = default;
-      private int _height;
+      private int _growth;
       private int _weight;
       private List<Criminal> _criminals;
 
@@ -29,19 +29,22 @@ class Program
       public void RequestData()
       {
          Console.WriteLine("Введите запрос:");
-         _height = number.ReadInteger("Укажите рост: ");
+         
+         _growth = number.ReadInteger("Укажите рост: ");
+         
          _weight = number.ReadInteger("Укажите вес: ");
+         
          var nationality = GetNationality(number.ReadInteger("Укажите расу: "));
 
-         Search(_height, _weight, nationality);
+         Search(_growth, _weight, nationality);
       }
 
-      private void Search(int height, int weight, Nationality nationality)
+      private void Search(int growth, int weight, Nationality nationality)
       {
          var criminals = from Criminal criminal in _criminals
                          where criminal.IsArrested == false
                          where criminal.Nationality == nationality
-                         where criminal.Height == height
+                         where criminal.Growth == growth
                          where criminal.Weight == weight
                          select criminal;
 
@@ -73,16 +76,16 @@ class Program
       public string Name { get; private set; }
       public string Patronymic { get; private set; }
       public bool IsArrested { get; private set; }
-      public int Height { get; private set; }
+      public int Growth { get; private set; }
       public int Weight { get; private set; }
       public Nationality Nationality { get; private set; }
 
-      public Criminal(string surname, string name, string patronymic, bool isArrested, int height, int weight, Nationality nationality)
+      public Criminal(string surname, string name, string patronymic, bool isArrested, int growth, int weight, Nationality nationality)
       {
          SurName = surname;
          Name = name;
          Patronymic = patronymic;
-         Height = height;
+         Growth = growth;
          Weight = weight;
          Nationality = nationality;
          IsArrested = isArrested;
@@ -90,7 +93,7 @@ class Program
 
       public string GetDescription()
       {
-         return $"{SurName} {Name} {Patronymic} рост: {Height}, вес: {Weight}, раса: {Nationality}";
+         return $"{SurName} {Name} {Patronymic} рост: {Growth}, вес: {Weight}, раса: {Nationality}";
       }
    }
    
