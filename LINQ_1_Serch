@@ -108,7 +108,7 @@ class Program
    
    public static class MyExtensions
    {
-      public static int ReadInteger(this int num, string message)
+      public static int ReadInteger(this int inputNumber, string message)
       {
          int number = default;
          bool isNumber = false;
