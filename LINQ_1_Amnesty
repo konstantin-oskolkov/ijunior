@@ -1,0 +1,132 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         Database database = new Database();
+         
+         database.RequestData();
+      }
+   }
+   
+  class Database
+   {
+      private int number = default;
+      private int _height;
+      private int _weight;
+      private List<Criminal> _criminals;
+
+      public Database()
+      {
+         _criminals = new List<Criminal> {
+         new Criminal("Гномов", "Гном", "Гномович", false, 125, 80, Nationality.Dwarf),
+         new Criminal("Тростинков", "Ветер", "Клеверыч", true, 190, 55, Nationality.Elf),
+         new Criminal("Попов", "Ярослав", "Тупович", true, 175, 80, Nationality.Terrain),
+         new Criminal("Я", "Есть", "Грут", false, 195, 157, Nationality.Orc),
+         new Criminal("Новогоднев", "Доздраперма", "Первомаевич", false, 95, 85, Nationality.Zerg)
+         };
+      }
+
+      public void RequestData()
+      {
+         Console.WriteLine("Введите запрос:");
+         _height = number.ReadInteger("Укажите рост: ");
+         _weight = number.ReadInteger("Укажите вес: ");
+         var nationality = GetNationality(number.ReadInteger("Укажите расу: "));
+
+         Serch(_height, _weight, nationality);
+      }
+
+      private void Serch(int height, int weight, Nationality nationality)
+      {
+         var criminals = from Criminal criminal in _criminals
+                         where criminal.IsArrested == false
+                         where criminal.Nationality == nationality
+                         where criminal.Height == height
+                         where criminal.Weight == weight
+                         select criminal;
+
+         ShowFind(criminals);
+      }
+
+      private void ShowFind(IEnumerable<Criminal> criminals)
+      {
+         if (criminals.Any() == false)
+         {
+            Console.WriteLine("Нет соответствий по вашим параметрам");
+         }
+
+         foreach (var criminal in criminals)
+         {
+            Console.WriteLine(criminal.GetDescription());
+         }
+      }
+
+      private Nationality GetNationality(int index)
+      {
+         return (Nationality)index;
+      }
+   }
+   
+  class Criminal
+   {
+      public string SurName { get; private set; }
+      public string Name { get; private set; }
+      public string Patronymic { get; private set; }
+      public bool IsArrested { get; private set; }
+      public int Height { get; private set; }
+      public int Weight { get; private set; }
+      public Nationality Nationality { get; private set; }
+
+      public Criminal(string surname, string name, string patronymic, bool isArrested, int height, int weight, Nationality nationality)
+      {
+         SurName = surname;
+         Name = name;
+         Patronymic = patronymic;
+         Height = height;
+         Weight = weight;
+         Nationality = nationality;
+         IsArrested = isArrested;
+      }
+
+      public string GetDescription()
+      {
+         return $"{SurName} {Name} {Patronymic} рост: {Height}, вес: {Weight}, раса: {Nationality}";
+      }
+   }
+   
+   [Flags]
+   enum Nationality
+   {
+      Elf = 1,
+      Orc,
+      Dwarf,
+      Undead,
+      Terrain,
+      Zerg,
+      Protoss
+   }
+   
+   public static class MyExtensions
+   {
+      public static int ReadInteger(this int str1, string message)
+      {
+         int number = default;
+         bool isNumber = false;
+         string input;
+
+         Console.Write(message);
+         input = Console.ReadLine();
+
+         while (isNumber == false)
+         {
+            isNumber = int.TryParse(input, out number);
+
+            if (isNumber == false)
+            {
+               Console.Write("\nВы ввели некорректные данные.\nпопробуй ещё: ");
+               input = Console.ReadLine();
+            }
+         }
+         return number;
+      }
+   }
