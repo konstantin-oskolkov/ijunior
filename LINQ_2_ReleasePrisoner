@@ -1,0 +1,75 @@
+public class Program
+   {
+      static void Main(string[] args)
+      {
+         Database database = new Database();
+
+         database.ShowPrisoners();
+         database.ReleasePrisoner(Crime.Antigovernment);
+         database.ShowPrisoners();
+      }
+   }
+   
+   public class Database
+   {
+      private List<Prisoner> _prisoners;
+
+      public Database()
+      {
+         _prisoners = new List<Prisoner>{
+             new Prisoner("Дэнчик", "Гнусович", "Суходрищев", 25, Crime.Robbery),
+             new Prisoner("Аркадий", "Сергеевич", "Мокродрищев", 35, Crime.Antigovernment),
+             new Prisoner("Гаврила", "Дормидоныч", "Простодрищев", 18, Crime.Robbery),
+             new Prisoner("Димон", "Димоныч", "Колесников", 27, Crime.Murder),
+             new Prisoner("Санёк", "Шпакович", "Лыжников", 43, Crime.Assault),
+             new Prisoner("Касян", "Гогавич", "Кубов", 32, Crime.Murder),
+             new Prisoner("Леха", "Сергеевич", "Сферов", 20, Crime.Antigovernment),
+             new Prisoner("Синий", "Яхэзэвич", "Стопкав", 26, Crime.Harassment),
+             new Prisoner("Никитка", "Гришович", "Заднеприводов", 19, Crime.Assault),
+             new Prisoner("Гриша", "Никитович", "Тулупов", 37, Crime.Antigovernment)
+            };
+      }
+
+      public void ReleasePrisoner(Crime crime)
+      {
+         _prisoners = _prisoners.Where(prisoner => prisoner.Crime != crime).ToList();
+      }
+
+      public void ShowPrisoners()
+      {
+         Console.WriteLine("\nСписок заключенных:");
+         _prisoners.ForEach(Console.WriteLine);
+      }
+   }
+   
+   public class Prisoner
+   {
+      public string Name { get; private set; }
+      public string Patronymic { get; private set; }
+      public string SurName { get; private set; }
+      public int Age { get; private set; }
+      public Crime Crime { get; private set; }
+
+      public Prisoner(string name, string patronymic, string surName, int age, Crime crime)
+      {
+         Name = name;
+         Patronymic = patronymic;
+         SurName = surName;
+         Age = age;
+         Crime = crime;
+      }
+
+      public override string ToString()
+      {
+         return $"преступник: {Name} {Patronymic} {SurName} |  за: {Crime}";
+      }
+   }
+   
+   public enum Crime
+   {
+      Robbery,
+      Murder,
+      Assault,
+      Harassment,
+      Antigovernment
+   }
