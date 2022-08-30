@@ -10,7 +10,7 @@ class Program
    
   class Database
    {
-      private int number = default;
+      private int _number = default;
       private int _growth;
       private int _weight;
       private List<Criminal> _criminals;
@@ -30,11 +30,11 @@ class Program
       {
          Console.WriteLine("Введите запрос:");
          
-         _growth = number.ReadInteger("Укажите рост: ");
+         _growth = _number.ReadInteger("Укажите рост: ");
          
-         _weight = number.ReadInteger("Укажите вес: ");
+         _weight = _number.ReadInteger("Укажите вес: ");
          
-         var nationality = GetNationality(number.ReadInteger("Укажите расу: "));
+         var nationality = GetNationality(_number.ReadInteger("Укажите расу: "));
 
          Search(_growth, _weight, nationality);
       }
