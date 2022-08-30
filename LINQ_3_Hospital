@@ -1,0 +1,138 @@
+public class Program
+   {
+      static void Main(string[] args)
+      {
+         Database database = new Database();
+         database.WorkBase();
+      }
+   }
+   
+   public class Database
+   {
+      private List<Patient> _patients;
+
+      public Database()
+      {
+         _patients = new List<Patient>
+         {
+            new Patient("Суходрищев", "Дэнчик", "Гнусович", 25, "Алкоголик"),
+            new Patient("Мокродрищев", "Аркадий", "Сергеевич", 35, "Алкоголик"),
+            new Patient("Простодрищев", "Гаврила", "Дормидоныч", 18, "Алкоголик"),
+            new Patient("Колесников", "Димон", "Димоныч", 27, "Алкоголик"),
+            new Patient("Лыжников", "Санёк", "Шпакович", 43, "Прыщи"),
+            new Patient("Кубов", "Касян", "Гогавич", 32, "Алкоголик"),
+            new Patient("Сферов", "Леха", "Сергеевич", 20, "Алкоголик"),
+            new Patient("Стопкав", "Синий", "Яхэзэвич", 26, "Алкоголик"),
+            new Patient("Заднеприводов", "Никитка", "Гришович", 19, "Алкоголик"),
+            new Patient("Тулупов", "Гриша", "Никитович", 37, "Алкоголик")
+         };
+      }
+
+      public void WorkBase()
+      {
+         bool isWork = true;
+
+         while (isWork)
+         {
+            ShowPatient();
+
+            Console.WriteLine("\n1) Отсортировать всех больных по ФИО\n2) Отсортировать всех больных по возрасту\n3) Вывести больных с определенным заболеванием\n4) Выход");
+            Console.Write("Выберите номер: ");
+
+            int.TryParse(Console.ReadLine(), out int input);
+
+            switch ((Select)input)
+            {
+               case Select.SurName:
+                  _patients = _patients.OrderBy(patient => patient.SurName).ToList();
+                  break;
+
+               case Select.Age:
+                  _patients = _patients.OrderBy(patient => patient.Age).ToList();
+                  break;
+
+               case Select.Sickness:
+                  SelectPatients();
+                  break;
+
+               case Select.Exit:
+                  isWork = false;
+                  break;
+
+               default:
+                  Console.WriteLine("Нет такой команды!!!\nНажмите любую клавишу, чтобы продолжить");
+                  Console.ReadKey();
+                  break;
+            }
+            Console.Clear();
+         }
+      }
+
+      public void SelectPatients()
+      {
+         Console.Write("\nВведите диагноз: ");
+         string input = Console.ReadLine();
+
+         List<Patient> patients = Find(input);
+
+         ShowFind(patients, input);
+         Console.ReadKey();
+      }
+
+      public List<Patient> Find(string disease)
+      {
+         return _patients.Where(patient => patient.Disease.ToUpper() == disease.ToUpper()).ToList();
+      }
+
+      public void ShowPatient()
+      {
+         Console.WriteLine("Список пациентов:");
+         _patients.ForEach(Console.WriteLine);
+      }
+
+      public void ShowFind(List<Patient> patients, string disease)
+      {
+         if (patients.Any())
+         {
+            Console.WriteLine("\nСписок пациентов с диагнозом - " + disease);
+            patients.ForEach(Console.WriteLine);
+            Console.WriteLine("\nНажмите любую клавишу, чтобы продолжить");
+         }
+         else
+         {
+            Console.WriteLine("\nСписок пуст");
+         }
+      }
+   }
+   
+   public class Patient
+   {
+      public string Name { get; private set; }
+      public string Patronymic { get; private set; }
+      public string SurName { get; private set; }
+      public int Age { get; private set; }
+      public string Disease { get; private set; }
+
+      public Patient(string surName, string name, string patronymic, int age, string disease)
+      {
+         Name = name;
+         Patronymic = patronymic;
+         SurName = surName;
+         Age = age;
+         Disease = disease;
+      }
+
+      public override string ToString()
+      {
+         return $"Пациент: {SurName} {Name} {Patronymic} | возраст: {Age} | диагноз: {Disease}";
+      }
+   }
+   
+  [Flags]
+   public enum Select
+   {
+      SurName = 1,
+      Age,
+      Sickness,
+      Exit
+   } 
