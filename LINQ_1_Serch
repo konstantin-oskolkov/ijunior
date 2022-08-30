@@ -3,16 +3,13 @@ class Program
       static void Main(string[] args)
       {
          Database database = new Database();
-         
-         database.RequestData();
+
+         database.FindPrisoners();
       }
    }
    
-  class Database
+   class Database
    {
-      private int _number = default;
-      private int _growth;
-      private int _weight;
       private List<Criminal> _criminals;
 
       public Database()
@@ -26,34 +23,39 @@ class Program
          };
       }
 
-      public void RequestData()
+      public void FindPrisoners()
       {
-         Console.WriteLine("Введите запрос:");
-         
-         _growth = _number.ReadInteger("Укажите рост: ");
-         
-         _weight = _number.ReadInteger("Укажите вес: ");
-         
-         var nationality = GetNationality(_number.ReadInteger("Укажите расу: "));
+         int growth;
+         int weight;
+         Nationality nationality;
 
-         Search(_growth, _weight, nationality);
+         RequestData(out growth, out weight, out nationality);
+         Search(growth, weight, nationality, out IEnumerable<Criminal> criminals);
+         ShowFind(criminals);
       }
 
-      private void Search(int growth, int weight, Nationality nationality)
+      private void RequestData(out int growth, out int weight, out Nationality nationality)
       {
-         var criminals = from Criminal criminal in _criminals
-                         where criminal.IsArrested == false
-                         where criminal.Nationality == nationality
-                         where criminal.Growth == growth
-                         where criminal.Weight == weight
-                         select criminal;
+         Console.WriteLine("Введите запрос:");
 
-         ShowFind(criminals);
+         growth = UserUtils.ReadInteger("Укажите рост: ");
+         weight = UserUtils.ReadInteger("Укажите вес: ");
+         nationality = GetNationality(UserUtils.ReadInteger("Укажите расу: "));
+      }
+
+      private void Search(int growth, int weight, Nationality nationality, out IEnumerable<Criminal> criminals)
+      {
+         criminals = from Criminal criminal in _criminals
+                     where criminal.IsArrested == false
+                     where criminal.Nationality == nationality
+                     where criminal.Height == growth
+                     where criminal.Weight == weight
+                     select criminal;
       }
 
       private void ShowFind(IEnumerable<Criminal> criminals)
       {
-        if (criminals.Any())
+         if (criminals.Any())
          {
             foreach (var criminal in criminals)
                Console.WriteLine(criminal.GetDescription());
@@ -70,22 +72,22 @@ class Program
       }
    }
    
-  class Criminal
+   class Criminal
    {
       public string SurName { get; private set; }
       public string Name { get; private set; }
       public string Patronymic { get; private set; }
       public bool IsArrested { get; private set; }
-      public int Growth { get; private set; }
+      public int Height { get; private set; }
       public int Weight { get; private set; }
       public Nationality Nationality { get; private set; }
 
-      public Criminal(string surname, string name, string patronymic, bool isArrested, int growth, int weight, Nationality nationality)
+      public Criminal(string surname, string name, string patronymic, bool isArrested, int height, int weight, Nationality nationality)
       {
          SurName = surname;
          Name = name;
          Patronymic = patronymic;
-         Growth = growth;
+         Height = height;
          Weight = weight;
          Nationality = nationality;
          IsArrested = isArrested;
@@ -93,11 +95,11 @@ class Program
 
       public string GetDescription()
       {
-         return $"{SurName} {Name} {Patronymic} рост: {Growth}, вес: {Weight}, раса: {Nationality}";
+         return $"{SurName} {Name} {Patronymic} рост: {Height}, вес: {Weight}, раса: {Nationality}";
       }
    }
    
-   [Flags]
+  [Flags]
    enum Nationality
    {
       Elf = 1,
@@ -109,9 +111,9 @@ class Program
       Protoss
    }
    
-   public static class MyExtensions
+   public static class UserUtils
    {
-      public static int ReadInteger(this int inputNumber, string message)
+      public static int ReadInteger(string message)
       {
          int number = default;
          bool isNumber = false;
@@ -132,4 +134,4 @@ class Program
          }
          return number;
       }
-   }
+   }   
