@@ -68,7 +68,7 @@ public class Program
          }
       }
 
-      public void SelectPatients()
+      private void SelectPatients()
       {
          Console.Write("\nВведите диагноз: ");
          string input = Console.ReadLine();
@@ -79,18 +79,18 @@ public class Program
          Console.ReadKey();
       }
 
-      public List<Patient> Find(string disease)
+      private List<Patient> Find(string disease)
       {
          return _patients.Where(patient => patient.Disease.ToUpper() == disease.ToUpper()).ToList();
       }
 
-      public void ShowPatient()
+      private void ShowPatient()
       {
          Console.WriteLine("Список пациентов:");
          _patients.ForEach(Console.WriteLine);
       }
 
-      public void ShowFind(List<Patient> patients, string disease)
+      private void ShowFind(List<Patient> patients, string disease)
       {
          if (patients.Any())
          {
