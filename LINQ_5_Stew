@@ -1,0 +1,68 @@
+ class Program
+   {
+      static void Main(string[] args)
+      {
+         DateTime DateTime = DateTime.Now;
+         
+         Storage storage = new Storage(DateTime.Year);
+         storage.Work();
+      }
+   }
+   
+   class Storage
+   {
+      private int _currentDate;
+      private List<Stew> _stews;
+
+      public Storage(int currentDate)
+      {
+         _currentDate = currentDate;
+
+         _stews = new List<Stew>
+         {
+           new Stew("Говнядина", 1985, 7),
+           new Stew("Фасолька", 2020, 3),
+           new Stew("Свин", 2015, 2),
+           new Stew("Фасолька", 2022, 3),
+           new Stew("Свин", 1975, 2),
+           new Stew("Говнядина", 2022, 2),
+           new Stew("Фасолька", 2021, 3),
+           new Stew("Говнядина", 2000, 2)
+         };
+      }
+
+      public void Work()
+      {
+         Console.WriteLine("Текущая дата: " + _currentDate);
+
+         Console.WriteLine("\nТушенка в наличии:");
+         ShowStews(_stews);
+
+         Console.WriteLine("\nТушенка испорченная:");
+         ShowStews(_stews.Where(stew => stew.Date + stew.Suitability <= _currentDate).ToList());
+      }
+      
+    private void ShowStews(List<Stew> stews)
+      {
+         stews.ForEach(Console.WriteLine);
+      }
+   }
+   
+  class Stew
+   {
+      public string Name { get; private set; }
+      public int Date { get; private set; }
+      public int Suitability { get; private set; }
+
+      public Stew(string name, int data, int suitability)
+      {
+         Name = name;
+         Date = data;
+         Suitability = suitability;
+      }
+
+      public override string ToString()
+      {
+         return $"Наименование: {Name} | дата изготовление: {Date} | годна: {Suitability} лет";
+      }
+   } 
