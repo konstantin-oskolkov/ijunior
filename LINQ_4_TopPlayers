@@ -34,14 +34,15 @@ class Program
          const string ShowByPower = "2";
          const string Exit = "3";
 
-         string input;
+         int quantity = 3;         
          bool isWork = true;
+         string input;
 
          while (isWork)
          {
             ShowPlayers(_players);
 
-            Console.WriteLine("\n1) Вывести ТОП 3 игрока по УРОВНЮ\n2) Вывести ТОП 3 игрока по СИЛЕ\n3) Выход");
+            Console.WriteLine($"\n1) Вывести ТОП {quantity} игрока по УРОВНЮ\n2) Вывести ТОП {quantity} игрока по СИЛЕ\n3) Выход");
             Console.Write("Выберите номер: ");
 
             input = Console.ReadLine();
@@ -49,11 +50,11 @@ class Program
             switch (input)
             {
                case ShowByLevel:
-                  ShowPlayers(_players.OrderByDescending(player => player.Level).Take(3).ToList());
+                  ShowPlayers(_players.OrderByDescending(player => player.Level).Take(quantity).ToList());
                   break;
 
                case ShowByPower:
-                  ShowPlayers(_players.OrderByDescending(player => player.Power).Take(3).ToList());
+                  ShowPlayers(_players.OrderByDescending(player => player.Power).Take(quantity).ToList());
                   break;
 
                case Exit:
