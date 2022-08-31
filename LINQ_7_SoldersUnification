@@ -1,0 +1,78 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         Battalion battalion = new Battalion();
+         battalion.Work();
+      }
+   }
+   
+   class Battalion
+   {
+      private List<Solder> _firstSquad;
+      private List<Solder> _secondSquad;
+
+      public Battalion()
+      {
+         _firstSquad = new List<Solder>{
+             new Solder("Дэнчик", "Гнусович", "Буходрищев"),
+             new Solder("Аркадий", "Сергеевич", "Мокродрищев"),
+             new Solder("Гаврила", "Дормидоныч", "Простодрищев"),
+             new Solder("Димон", "Димоныч", "Болесников"),
+             new Solder("Санёк", "Шпакович", "Лыжников")
+            };
+
+         _secondSquad = new List<Solder>{
+             new Solder("Касян", "Гогавич", "Кубов"),
+             new Solder("Леха", "Сергеевич", "Сферов"),
+             new Solder("Синий", "Яхэзэвич", "Стопкав"),
+             new Solder("Никитка", "Гришович", "Заднеприводов"),
+             new Solder("Гриша", "Никитович", "Тулупов")
+            };
+      }
+
+      public void Work()
+      {
+         ShowSolders(_firstSquad);
+         ShowSolders(_secondSquad);
+
+         TransferSolders();
+
+         ShowSolders(_firstSquad);
+         ShowSolders(_secondSquad);
+      }
+
+      private void TransferSolders()
+      {
+         var soldiers = _firstSquad.Where(soldier => soldier.SurName.StartsWith("Б"));
+
+         _secondSquad = _secondSquad.Union(soldiers).ToList();
+
+         _firstSquad = _firstSquad.Except(soldiers).ToList();
+      }
+
+      private void ShowSolders(List<Solder> soldiers)
+      {
+         Console.WriteLine("\n____________Список_солдат_____________\n");
+         soldiers.ForEach(Console.WriteLine);
+      }
+   }
+   
+   class Solder
+   {
+      public string Name { get; private set; }
+      public string Patronymic { get; private set; }
+      public string SurName { get; private set; }
+
+      public Solder(string name, string patronymic, string surName)
+      {
+         Name = name;
+         Patronymic = patronymic;
+         SurName = surName;
+      }
+
+      public override string ToString()
+      {
+         return $"Солдат: {Name} {Patronymic} {SurName}";
+      }
+   }
