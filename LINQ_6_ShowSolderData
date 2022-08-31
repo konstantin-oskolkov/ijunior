@@ -1,0 +1,71 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         Database database = new Database();
+         database.ShowSolder();
+      }
+   }
+   
+   class Database
+   {
+      private List<Solder> _solders;
+
+      public Database()
+      {
+         _solders = new List<Solder>{
+             new Solder("Дэнчик", (int)Weapon.Gun, (int)Title.Captain , 24),
+             new Solder("Аркадий", (int)Weapon.Minigun, (int)Title.Major , 24),
+             new Solder("Гаврила", (int)Weapon.Rifle, (int)Title.Lieutenant , 24),
+             new Solder("Димон", (int)Weapon.Gun, (int)Title.Major , 24),
+             new Solder("Санёк", (int)Weapon.Rifle, (int)Title.Lieutenant , 24),
+             new Solder("Касян", (int)Weapon.Minigun, (int)Title.Major , 24),
+             new Solder("Леха", (int)Weapon.Gun, (int)Title.Captain , 24),
+             new Solder("Синий", (int)Weapon.Rifle, (int)Title.Lieutenant , 24),
+             new Solder("Никитка", (int)Weapon.Gun, (int)Title.Lieutenant , 24),
+             new Solder("Гриша", (int)Weapon.Rifle, (int)Title.Captain , 24)
+            };
+      }
+
+      public void ShowSolder()
+      {
+         Console.WriteLine("\nСписок солдат:");
+
+         var solders = _solders.Select(solder => new {solder.Name, solder.Title} );
+
+         foreach (var solder in solders)
+         {
+            Console.WriteLine($"Имя: {solder.Name} | Звание: {(Title)solder.Title}.");
+         }
+      }
+   }
+   
+   class Solder
+   {
+      public string Name { get; private set; }
+      public int MonthService { get; private set; }
+      public int Weapon { get; private set; }
+      public int Title { get; private set; }
+
+      public Solder(string name, int weapon, int title, int monthService)
+      {
+         Name = name;
+         MonthService = monthService;
+         Weapon = weapon;
+         Title = title;
+      }
+   }
+   
+   enum Title
+   {
+      Lieutenant,
+      Captain,
+      Major
+   }
+   
+  enum Weapon
+   {
+      Minigun,
+      Gun,
+      Rifle
+   } 
