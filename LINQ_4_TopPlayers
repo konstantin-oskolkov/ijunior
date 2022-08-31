@@ -1,0 +1,95 @@
+class Program
+   {
+      static void Main(string[] args)
+      {
+         Database database = new Database();
+         database.WorkBase();
+      }
+   }
+   
+   class Database
+   {
+      private List<Player> _players;
+
+      public Database()
+      {
+         _players = new List<Player>
+         {
+            new Player("Дэнчик", 125, 6),
+            new Player("Аркадий", 35, 10),
+            new Player("Гаврила", 1, 101),
+            new Player("Димон", 27, 1),
+            new Player("Санёк", 13, 75),
+            new Player("Касян", 52, 15),
+            new Player("Леха", 20, 7),
+            new Player("Синий", 26, 3),
+            new Player("Никитка", 19, 2),
+            new Player("Гриша", 7, 98)
+         };
+      }
+
+      public void WorkBase()
+      {
+         const string ShowByLevel = "1";
+         const string ShowByPower = "2";
+         const string Exit = "3";
+
+         string input;
+         bool isWork = true;
+
+         while (isWork)
+         {
+            ShowPlayers(_players);
+
+            Console.WriteLine("\n1) Вывести ТОП 3 игрока по УРОВНЮ\n2) Вывести ТОП 3 игрока по СИЛЕ\n3) Выход");
+            Console.Write("Выберите номер: ");
+
+            input = Console.ReadLine();
+
+            switch (input)
+            {
+               case ShowByLevel:
+                  ShowPlayers(_players.OrderByDescending(player => player.Level).Take(3).ToList());
+                  break;
+
+               case ShowByPower:
+                  ShowPlayers(_players.OrderByDescending(player => player.Power).Take(3).ToList());
+                  break;
+
+               case Exit:
+                  isWork = false;
+                  break;
+
+               default:
+                  Console.WriteLine("Нет такой команды!!!\nНажмите любую клавишу, чтобы продолжить");
+                  break;
+            }
+            Console.ReadKey();
+            Console.Clear();
+         }
+      }
+
+      private void ShowPlayers(List<Player> players)
+      {
+         players.ForEach(Console.WriteLine);
+      }
+   }
+   
+   class Player
+   {
+      public string Name { get; private set;}
+      public int Power { get; private set;}
+      public int Level { get; private set;}
+
+      public Player(string name, int power, int level)
+      {
+         Name = name;
+         Power = power;
+         Level = level;
+      }
+
+      public override string ToString()
+      {
+         return $"Ник: {Name} | Стла: {Power} | Уровень: {Level}";
+      }
+   }
