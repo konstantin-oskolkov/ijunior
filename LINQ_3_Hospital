@@ -7,7 +7,7 @@ public class Program
       }
    }
    
-   public class Database
+  public class Database
    {
       private List<Patient> _patients;
 
@@ -16,20 +16,26 @@ public class Program
          _patients = new List<Patient>
          {
             new Patient("Суходрищев", "Дэнчик", "Гнусович", 25, "Алкоголик"),
-            new Patient("Мокродрищев", "Аркадий", "Сергеевич", 35, "Алкоголик"),
+            new Patient("Мокродрищев", "Аркадий", "Сергеевич", 35, "Сопли"),
             new Patient("Простодрищев", "Гаврила", "Дормидоныч", 18, "Алкоголик"),
             new Patient("Колесников", "Димон", "Димоныч", 27, "Алкоголик"),
             new Patient("Лыжников", "Санёк", "Шпакович", 43, "Прыщи"),
             new Patient("Кубов", "Касян", "Гогавич", 32, "Алкоголик"),
-            new Patient("Сферов", "Леха", "Сергеевич", 20, "Алкоголик"),
-            new Patient("Стопкав", "Синий", "Яхэзэвич", 26, "Алкоголик"),
+            new Patient("Сферов", "Леха", "Сергеевич", 20, "Энурез"),
+            new Patient("Стопкав", "Синий", "Яхэзэвич", 26, "ущиб кокушек"),
             new Patient("Заднеприводов", "Никитка", "Гришович", 19, "Алкоголик"),
-            new Patient("Тулупов", "Гриша", "Никитович", 37, "Алкоголик")
+            new Patient("Тулупов", "Гриша", "Никитович", 37, "Запор")
          };
       }
 
       public void WorkBase()
       {
+         const string SortBySurName = "1";
+         const string SortByAge = "2";
+         const string ShowByDisease = "3";
+         const string Exit = "4";
+
+         string input;
          bool isWork = true;
 
          while (isWork)
@@ -39,23 +45,23 @@ public class Program
             Console.WriteLine("\n1) Отсортировать всех больных по ФИО\n2) Отсортировать всех больных по возрасту\n3) Вывести больных с определенным заболеванием\n4) Выход");
             Console.Write("Выберите номер: ");
 
-            int.TryParse(Console.ReadLine(), out int input);
+            input = Console.ReadLine();
 
-            switch ((Select)input)
+            switch (input)
             {
-               case Select.SurName:
+               case SortBySurName:
                   _patients = _patients.OrderBy(patient => patient.SurName).ToList();
                   break;
 
-               case Select.Age:
+               case SortByAge:
                   _patients = _patients.OrderBy(patient => patient.Age).ToList();
                   break;
 
-               case Select.Sickness:
+               case ShowByDisease:
                   SelectPatients();
                   break;
 
-               case Select.Exit:
+               case Exit:
                   isWork = false;
                   break;
 
@@ -68,29 +74,29 @@ public class Program
          }
       }
 
-      private void SelectPatients()
+      public void SelectPatients()
       {
          Console.Write("\nВведите диагноз: ");
          string input = Console.ReadLine();
 
-         List<Patient> patients = Find(input);
+         List<Patient> patients = FindByDisease(input);
 
          ShowFind(patients, input);
          Console.ReadKey();
       }
 
-      private List<Patient> Find(string disease)
+      public List<Patient> FindByDisease(string disease)
       {
          return _patients.Where(patient => patient.Disease.ToUpper() == disease.ToUpper()).ToList();
       }
 
-      private void ShowPatient()
+      public void ShowPatient()
       {
          Console.WriteLine("Список пациентов:");
          _patients.ForEach(Console.WriteLine);
       }
 
-      private void ShowFind(List<Patient> patients, string disease)
+      public void ShowFind(List<Patient> patients, string disease)
       {
          if (patients.Any())
          {
@@ -104,7 +110,7 @@ public class Program
          }
       }
    }
-   
+  
    public class Patient
    {
       public string Name { get; private set; }
@@ -127,12 +133,3 @@ public class Program
          return $"Пациент: {SurName} {Name} {Patronymic} | возраст: {Age} | диагноз: {Disease}";
       }
    }
-   
-  [Flags]
-   public enum Select
-   {
-      SurName = 1,
-      Age,
-      Sickness,
-      Exit
-   } 
